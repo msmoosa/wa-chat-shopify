@@ -10,22 +10,13 @@
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
 
+        @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body>
-        <!-- You are: (shop domain name) -->
-        <p>You are: {{ $shopDomain ?? Auth::user()->name }}</p>
-
-        <h1>Products</h1>
-        @if (!empty($error)) {{$error}} @endif
-        @foreach ($products as $product)
-            <p>{{ $product['title'] }}</p>
-        @endforeach
-
-        <ui-title-bar title="Products">
-        <button onclick="console.log('Secondary action')">Secondary action</button>
-        <button variant="primary" onclick="console.log('Primary action')">
-            Primary action
-        </button>
-        </ui-title-bar>
+        <div id="app" data-props="{{ json_encode([
+            'shopDomain' => $shopDomain ?? Auth::user()->name ?? '',
+            'products' => $products ?? [],
+            'error' => $error ?? ''
+        ]) }}"></div>
     </body>
 </html>
