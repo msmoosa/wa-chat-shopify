@@ -24,6 +24,9 @@ export default defineConfig({
             vue: 'vue/dist/vue.esm-bundler.js',
         },
     },
+    optimizeDeps: {
+        include: ['vue', 'vue-router'],
+    },
     server: {
         watch: {
             ignored: ['**/storage/framework/views/**'],
