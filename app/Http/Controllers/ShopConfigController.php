@@ -25,11 +25,11 @@ class ShopConfigController extends Controller
             ], 401);
         }
 
+        $whatsappConfig = array_merge($this->getDefaultWhatsappConfig(), $shop->whatsapp_config ?? []);
+        $shop->whatsapp_config = $whatsappConfig;
         return response()->json([
             'success' => true,
-            'data' => [
-                'whatsapp_config' => $shop->whatsapp_config ?? $this->getDefaultWhatsappConfig()
-            ]
+            'data' => $shop
         ]);
     }
 
@@ -50,18 +50,9 @@ class ShopConfigController extends Controller
             ], 401);
         }
 
-        // Validate the request
-        $validated = $request->validate([
-            'phone' => 'nullable|string|max:255',
-            'isEnabled' => 'boolean',
-            'position' => 'nullable|string|in:bottom-left,bottom-right,top-left,top-right',
-            'color' => 'nullable|string|regex:/^#[0-9A-Fa-f]{6}$/',
-        ]);
-
         try {
             // Merge with existing config to preserve any additional fields
-            $existingConfig = $shop->whatsapp_config ?? [];
-            $whatsappConfig = array_merge($this->getDefaultWhatsappConfig(), $existingConfig, $validated);
+            $whatsappConfig = $request->all();
 
             // Update the shop's whatsapp_config
             $shop->whatsapp_config = $whatsappConfig;
@@ -71,9 +62,7 @@ class ShopConfigController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'Configuration saved successfully',
-                'data' => [
-                    'whatsapp_config' => $shop->whatsapp_config
-                ]
+                'data' => $shop
             ]);
         } catch (\Exception $e) {
             return response()->json([
@@ -86,10 +75,14 @@ class ShopConfigController extends Controller
     private function getDefaultWhatsappConfig()
     {
         return [
-            'phone' => '',
+            'phoneNumber' => '',
             'isEnabled' => true,
-            'position' => 'bottom-right',
-            'color' => '#42D74C',
+            'buttonPosition' => 'bottom-right',
+            'buttonBackgroundColor' => '#42D74C',
+            'buttonIconColor' => '#FFFFFF',
+            'buttonTextColor' => '#FFFFFF',
+            'buttonTextContent' => 'Contact Us',
+            'designType' => 'icon'
         ];
     }
 }

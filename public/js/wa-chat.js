@@ -91,6 +91,13 @@ var shopDomain;
                 } else e[o[0]].push(decodeURIComponent(o[1]));
             }
             return e;
+        },
+        replaceBulk( str, obj){
+            // function that replaces all the keys in the object with the values in the object
+            for (const key in obj) {
+                str = str.replace( key, obj[key]);
+            }
+            return str;
         }
     };
 
@@ -109,7 +116,7 @@ var shopDomain;
 
     function initWhatsappButton() {
         log('Initializing Whatsapp Button');
-        if (!shop.whatsapp_config) {
+        if (!shop.whatsapp_config || !shop.whatsapp_config.isEnabled || !shop.whatsapp_config.phoneNumber) {
             logError('Whatsapp config not found');
             return;
         }
@@ -123,16 +130,26 @@ var shopDomain;
         log('Creating Whatsapp Button');
         const config = shop.whatsapp_config;
         var html = '<div id="was-widget-container">';
-        html += '<style>#was-button-container{line-height:0;background:green;width:64px;height:64px;margin:20px;position:absolute;bottom:0;border-radius:32px;display:inline-block!important}#was-icon{height:42px;width:42px;margin:11px}</style>';
-        html += '<div id="was-button-container" style="background: ' + config.color + '; '
+        html += '<style>.was-button-container{background:green;cursor:pointer;width:64px;height:64px;margin:20px;position:absolute;bottom:0;border-radius:32px;display:inline-block!important}.was-icon-button{width:auto!important;height:auto!important;line-height:auto!important;font-size:16px;padding:10px;color:#fff}#was-icon{height:42px;width:42px;margin:11px}#was-icon-button-icon{height:14px;padding-right: 4px}</style>';
+        if (config.design === 'icon') {
+        html += '\n<div class="was-button-container" style="background: buttonBackgroundColor;; '
                         + ((config.position === 'bottom-left') ? 'left: 0' : 'right: 0') + '">'
-                        + '<div id="was-icon" style="background: white; -webkit-mask-image: url(https://cdn.shopify.com/s/files/1/0460/1839/6328/files/waiconmask.svg?v=1623288530); -webkit-mask-size: cover;"></div>'
+                        + '<div id="was-icon" style="background: buttonIconColor; -webkit-mask-image: url(https://cdn.shopify.com/s/files/1/0460/1839/6328/files/waiconmask.svg?v=1623288530); -webkit-mask-size: cover;"></div>'
                     + '</div>' 
             + '</div>';
+        } else {
+            html += '<div class="was-button-container was-icon-button" style="background: buttonBackgroundColor; '
+                        + 'color: buttonTextColor; '
+                        + ((config.position === 'bottom-left') ? 'left: 0' : 'right: 0') + '">'
+                        + '<img id="was-icon-button-icon" src="https://cdn.shopify.com/s/files/1/0460/1839/6328/files/waiconmask.svg?v=1623288530" alt="Whatsapp Icon" />'
+                        + config.buttonTextContent + '</div>';
+        }
+
+        html = Utilities.replaceBulk(html, config);
         
         // Insert HTML directly into body using insertAdjacentHTML
         document.body.insertAdjacentHTML('beforeend', html);
-        document.getElementById('was-button-container').addEventListener('click', function() {
+        document.getElementsByClassName('was-button-container')[0].addEventListener('click', function() {
             log('Whatsapp button clicked');
             // strip + and 00 from phone number beginning
             const phone = config.phone.replace(/^00/, '').replace(/^\+/, '');
