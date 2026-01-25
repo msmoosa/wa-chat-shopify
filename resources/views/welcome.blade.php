@@ -6,17 +6,19 @@
 
         <title>{{ config('app.name', 'Laravel') }}</title>
 
-        <!-- Fonts -->
-        <link rel="preconnect" href="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
+        <!-- Shopify Polaris CSS -->
+        <script src="https://cdn.shopify.com/shopifycloud/app-bridge.js"></script>
+        <script src="https://cdn.shopify.com/shopifycloud/polaris.js"></script>
 
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body>
         <div id="app" data-props="{{ json_encode([
+            'shop' => Auth::user(),
             'shopDomain' => $shopDomain ?? Auth::user()->name ?? '',
             'products' => $products ?? [],
             'error' => $error ?? ''
         ]) }}"></div>
+        
     </body>
 </html>
