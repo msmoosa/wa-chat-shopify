@@ -7,6 +7,9 @@
 
     <title>{{ config('app.name', 'Laravel') }}</title>
 
+    <!-- CSRF Token -->
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
     <!-- Shopify Polaris CSS -->
     <script src="https://cdn.shopify.com/shopifycloud/app-bridge.js"></script>
     <script src="https://cdn.shopify.com/shopifycloud/polaris.js"></script>

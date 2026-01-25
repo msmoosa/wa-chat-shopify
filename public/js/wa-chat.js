@@ -109,6 +109,29 @@ var shopDomain;
 
     function initWhatsappButton() {
         log('Initializing Whatsapp Button');
+        if (!shop.whatsapp_config) {
+            logError('Whatsapp config not found');
+            return;
+        }
+
+        log('Whatsapp config: ', shop.whatsapp_config);
+        // create whatsapp button
+        createWhatsappButton();
+    }
+
+    function createWhatsappButton() {
+        log('Creating Whatsapp Button');
+        const config = shop.whatsapp_config;
+        var html = '<div id="was-widget-container">';
+        html += '<style>#was-button-container{line-height:0;background:green;width:64px;height:64px;margin:20px;position:absolute;bottom:0;border-radius:32px;display:inline-block!important}#was-icon{height:42px;width:42px;margin:11px}</style>';
+        html += '<div id="was-button-container" style="background: ' + config.color + '; '
+                        + ((config.position === 'bottom-left') ? 'left: 0' : 'right: 0') + '">'
+                        + '<div id="was-icon" style="background: white; -webkit-mask-image: url(https://cdn.shopify.com/s/files/1/0460/1839/6328/files/waiconmask.svg?v=1623288530); -webkit-mask-size: cover;"></div>'
+                    + '</div>' 
+            + '</div>';
+        
+        // Insert HTML directly into body using insertAdjacentHTML
+        document.body.insertAdjacentHTML('beforeend', html);
     }
 
     init();

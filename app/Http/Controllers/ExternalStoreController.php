@@ -18,13 +18,23 @@ class ExternalStoreController extends Controller
      */
     public function getStore(Request $request, IShopQuery $shopQuery): JsonResponse
     {
+        // Handle preflight OPTIONS request
+        if ($request->isMethod('OPTIONS')) {
+            return response()->json([], 200)
+                ->header('Access-Control-Allow-Origin', '*')
+                ->header('Access-Control-Allow-Methods', 'GET, OPTIONS')
+                ->header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With')
+                ->header('Access-Control-Max-Age', '86400');
+        }
+
         $shopDomain = $request->query('shop');
 
         if (!$shopDomain) {
             return response()->json([
                 'success' => false,
                 'message' => 'Shop parameter is required. Use ?shop=domain.myshopify.com'
-            ], 400);
+            ], 400)
+                ->header('Access-Control-Allow-Origin', '*');
         }
 
         // Normalize the domain
@@ -42,7 +52,8 @@ class ExternalStoreController extends Controller
                 return response()->json([
                     'success' => false,
                     'message' => 'Shop not found'
-                ], 404);
+                ], 404)
+                    ->header('Access-Control-Allow-Origin', '*');
             }
 
             // Return shop data (exclude sensitive information)
@@ -51,14 +62,19 @@ class ExternalStoreController extends Controller
                 'data' => [
                     'id' => $shop->getId(),
                     'domain' => (string) $shop->getDomain()->toNative(),
-                    'name' => $shop->name ?? null
+                    'name' => $shop->name ?? null,
+                    'whatsapp_config' => $shop->whatsapp_config ?? null
                 ]
-            ]);
+            ])
+                ->header('Access-Control-Allow-Origin', '*')
+                ->header('Access-Control-Allow-Methods', 'GET, OPTIONS')
+                ->header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
                 'message' => 'Error retrieving shop: ' . $e->getMessage()
-            ], 500);
+            ], 500)
+                ->header('Access-Control-Allow-Origin', '*');
         }
     }
 }
