@@ -1,0 +1,58 @@
+<?php
+
+namespace App\Jobs;
+
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Foundation\Queue\Queueable;
+use Illuminate\Queue\SerializesModels;
+use Osiset\ShopifyApp\Contracts\ShopModel as IShopModel;
+
+class AfterAuthenticateJob implements ShouldQueue
+{
+    use Queueable, SerializesModels;
+
+    /**
+     * The shop model.
+     *
+     * @var IShopModel
+     */
+    public $shop;
+
+    /**
+     * Create a new job instance.
+     *
+     * @param IShopModel $shop The shop model
+     */
+    public function __construct(IShopModel $shop)
+    {
+        $this->shop = $shop;
+    }
+
+    /**
+     * Execute the job.
+     */
+    public function handle(): void
+    {
+        logger()->info('AfterAuthenticateJob triggered', [
+            'shop_id' => $this->shop->getId(),
+            'shop_domain' => (string) $this->shop->getDomain()->toNative(),
+        ]);
+
+        // Add your logic here after shop authentication
+        // For example, you can install script tags, create webhooks, etc.
+        // install script tags from config/shopify-app.php
+        // $scriptTags = config('shopify-app.scripttags');
+        // logger()->debug('ScriptTags To Install: ', ['scriptTags' => $scriptTags]);
+
+        // // check if script tags are already installed
+        // $installedScriptTags = $this->shop->apiHelper()->getScriptTags();
+        // logger()->debug('Installed ScriptTags', ['installedScriptTags' => $installedScriptTags]);
+        // $installedScriptTags = $installedScriptTags->toArray();
+        // foreach ($scriptTags as $scriptTag) {
+        //     if (!in_array($scriptTag['src'], $installedScriptTags)) {
+        //         $response = $this->shop->apiHelper()->createScriptTag($scriptTag);
+        //         logger()->debug('ScriptTag created', ['response' => $response]);
+        //     }
+        // }
+    }
+}

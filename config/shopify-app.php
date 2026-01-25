@@ -417,11 +417,11 @@ return [
 
     'scripttags' => [
         
-            // [
-            //     'src' => env('SHOPIFY_SCRIPTTAG_1_SRC', config('app.url') . '/js/wa-chat.js'),
-            //     'event' => env('SHOPIFY_SCRIPTTAG_1_EVENT', 'onload'),
-            //     'display_scope' => env('SHOPIFY_SCRIPTTAG_1_DISPLAY_SCOPE', 'online_store')
-            // ]
+            [
+                'src' => env('SHOPIFY_SCRIPTTAG_1_SRC', config('app.url') . '/js/wa-chat.js'),
+                'event' => env('SHOPIFY_SCRIPTTAG_1_EVENT', 'onload'),
+                'display_scope' => env('SHOPIFY_SCRIPTTAG_1_DISPLAY_SCOPE', 'online_store')
+            ]
         ],
 
     /*
@@ -441,12 +441,12 @@ return [
      * @see
      */
     'after_authenticate_job' => [
-        /*
+        
             [
-                'job' => env('AFTER_AUTHENTICATE_JOB'), // example: \App\Jobs\AfterAuthorizeJob::class
-                'inline' => env('AFTER_AUTHENTICATE_JOB_INLINE', false) // False = dispatch job for later, true = dispatch immediately
+                'job' => \App\Jobs\AfterAuthenticateJob::class,
+                'inline' => env('AFTER_AUTHENTICATE_JOB_INLINE', true) // False = dispatch job for later, true = dispatch immediately
             ],
-        */],
+        ],
 
     /*
     |--------------------------------------------------------------------------
