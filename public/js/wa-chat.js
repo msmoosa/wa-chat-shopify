@@ -132,6 +132,12 @@ var shopDomain;
         
         // Insert HTML directly into body using insertAdjacentHTML
         document.body.insertAdjacentHTML('beforeend', html);
+        document.getElementById('was-button-container').addEventListener('click', function() {
+            log('Whatsapp button clicked');
+            // strip + and 00 from phone number beginning
+            const phone = config.phone.replace(/^00/, '').replace(/^\+/, '');
+            window.open('https://wa.me/' + phone, '_blank');
+        });
     }
 
     init();
