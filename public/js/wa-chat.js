@@ -217,7 +217,7 @@ var shopDomain;
         for (const agent of config.widgetAgents) {
             html += '<div class="was-agent-item" data-phone-number="' + agent.phoneNumber + '">';
             html += '<div class="was-agent-item-avatar">';
-            html += '<img src="/images/' + agent.gender + '-avatar.png" alt="Avatar">';
+            html += '<img src="'+assetBaseUrl+'/images/' + agent.gender + '-avatar.png" alt="Avatar">';
             html += '</div>';
             html += '<div class="was-agent-item-info">';
             html += '<div class="was-agent-item-name">' + agent.name + '</div>';
@@ -240,11 +240,12 @@ var shopDomain;
     }
 
     function showOrHideChatAgentsWidget() {
-        log('Showing Chat Agents Widget');
         const wasAgentsWidgetContainer = document.getElementById('was-agents-widget-container');
         if (wasAgentsWidgetContainer.style.display === 'block') {
+            log('Hiding Chat Agents Widget');
             wasAgentsWidgetContainer.style.display = 'none';
         } else {
+            log('Showing Chat Agents Widget');
             wasAgentsWidgetContainer.style.display = 'block';
         }
         
