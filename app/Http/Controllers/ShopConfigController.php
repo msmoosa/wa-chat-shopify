@@ -93,7 +93,7 @@ class ShopConfigController extends Controller
             'isDefaultMessageEnabled' => true,
             'defaultMessageText' => 'Hi, I\'m looking for help on {pageUrl}',
             'iconGradientSecondColor' => '#57D4FA',
-            'buttonIconFlag' => 'in',
+            'buttonIconFlag' => 'ind',
             'widgetHeaderTitle' => 'Chat with us',
             'widgetHeaderDescription' => 'We\'re here to help you with your questions and concerns.',
             'widgetHeaderBackgroundColor' => '#42D74C',
