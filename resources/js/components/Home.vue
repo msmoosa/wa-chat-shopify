@@ -32,6 +32,7 @@
                     @input="config.designType = $event.target.value">
                     <s-option value="icon">Icon</s-option>
                     <s-option value="icon-gradient">Icon Gradient</s-option>
+                    <s-option value="icon-flag">Icon Flag</s-option>
                     <s-option value="icon-with-text">Icon with Text</s-option>
                 </s-select>
 
@@ -49,6 +50,16 @@
                     <s-color-field label="Icon Gradient Second Color" placeholder="Select a color"
                         :value="config.iconGradientSecondColor"
                         @input="config.iconGradientSecondColor = $event.target.value"></s-color-field>
+                </template>
+
+                <template v-if="config.designType === 'icon-flag'">
+                    <s-select label="Flag" :value="config.buttonIconFlag"
+                        @input="config.buttonIconFlag = $event.target.value">
+                        <s-option value="ind">India</s-option>
+                        <s-option value="usa">United States</s-option>
+                        <s-option value="uae">United Arab Emirates</s-option>
+                    </s-select>
+
                 </template>
 
 
@@ -84,6 +95,8 @@
                     @input="config.widgetHeaderDescription = $event.target.value" />
                 <s-color-field label="Header Background Color" :value="config.widgetHeaderBackgroundColor"
                     @input="config.widgetHeaderBackgroundColor = $event.target.value" />
+                <s-color-field label="Header Secondary Color" :value="config.widgetHeaderSecondaryColor"
+                    @input="config.widgetHeaderSecondaryColor = $event.target.value" />
                 <s-color-field label="Header Text Color" :value="config.widgetHeaderTextColor"
                     @input="config.widgetHeaderTextColor = $event.target.value" />
 
@@ -126,12 +139,13 @@
                 <!-- {{ config }}
                 <br /> -->
                 <div id="was-preview-background">
-                    <template v-if="config.designType === 'icon' || config.designType === 'icon-gradient'">
-                        <div class="was-button-container" :style="'background: ' + getButtonBackgroundColor() + '; '
-                            + (isLeftPosition() ? 'left: 0' : 'right:0') + ';'
-                            + 'margin: ' + config.buttonMarginDesktop + 'px;'
-                            + 'width: ' + config.buttonIconSize + 'px; height: ' + config.buttonIconSize + 'px;'">
-                            <div id="was-icon"
+                    <template v-if="config.designType !== 'icon-with-text'">
+                        <div :class="config.designType === 'icon-flag' ? 'was-button-container was-icon-flag' : 'was-button-container'"
+                            :style="'background: ' + getButtonBackgroundColor() + '; '
+                                + (isLeftPosition() ? 'left: 0' : 'right:0') + ';'
+                                + 'margin: ' + config.buttonMarginDesktop + 'px;'
+                                + 'width: ' + config.buttonIconSize + 'px; height: ' + config.buttonIconSize + 'px;'">
+                            <div v-if="config.designType !== 'icon-flag'" id="was-icon"
                                 :style="'background: ' + config.buttonIconColor + '; -webkit-mask-image: url(https://cdn.shopify.com/s/files/1/0460/1839/6328/files/waiconmask.svg?v=1623288530); -webkit-mask-size: cover;'">
                             </div>
                         </div>
@@ -257,6 +271,9 @@ export default {
             if (this.config.designType === 'icon-gradient') {
                 return 'linear-gradient(to bottom right, ' + this.config.buttonBackgroundColor + ', ' + this.config.iconGradientSecondColor + ')';
             }
+            if (this.config.designType === 'icon-flag') {
+                return 'url(/images/flags/' + this.config.buttonIconFlag + '.png)';
+            }
             return this.config.buttonBackgroundColor;
         }
     }
@@ -303,5 +320,10 @@ export default {
     position: relative;
     display: block;
     height: 80px;
+}
+
+.was-icon-flag {
+    border-radius: 0;
+    background-size: cover !important;
 }
 </style>

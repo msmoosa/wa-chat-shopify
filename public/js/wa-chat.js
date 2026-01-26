@@ -1,6 +1,7 @@
 (function() {
 var shopDomain;
     var isDebug = true; // window.location.search.includes('isDebug=true');
+    var assetBaseUrl = 'https://wa-chat.test';
     var apiBaseUrl = 'https://wa-chat.test/external';
     var shop = null;
     var config = null;
@@ -144,13 +145,13 @@ var shopDomain;
         log('Creating Whatsapp Button');
         const config = shop.whatsapp_config;
         var html = '<div id="was-widget-container">';
-        html += '<style>.was-button-container{background:green;cursor:pointer;width:64px;height:64px;margin:20px;position:fixed;bottom:0;border-radius:32px;display:inline-block!important}.was-icon-button{width:auto!important;height:auto!important;line-height:auto!important;font-size:16px;padding:10px;color:#fff}#was-icon{height:42px;width:42px;margin:11px}#was-icon-button-icon{height:14px;padding-right:4px}#was-agents-widget-container{height:500px;width:300px;background:#fff;border-radius:10px;box-shadow:0 0 10px 0 rgba(0,0,0,.1);position:absolute;bottom:0;right:0;margin-bottom:90px;margin-right:20px;z-index:1000}.was-agents-header{padding:14px;border-radius:10px 10px 0 0}.was-agents-header-title{font-size:1.2rem;font-weight:600}.was-agents-header-description{font-size:.9rem}.was-agents-header-close{font-size:1.2rem;font-weight:600;cursor:pointer}.was-agent-item-avatar{width:50px;height:50px;border-radius:50%;overflow:hidden;margin-right:10px}.was-agent-item-avatar img{width:100%;height:100%;object-fit:cover}.was-agent-item{display:flex;cursor:pointer;align-items:center;padding:10px;border-bottom:1px solid #e0e0e0}.was-agent-item-info{display:flex;flex-direction:column;justify-content:center}.was-agent-item-name{font-size:1.2rem}.was-agent-item-role{color:#666}#was-agents-widget-container{display:none}</style>';
-        if (config.designType === 'icon' || config.designType === 'icon-gradient') {
-        html += '\n<div class="was-button-container" style="background: '+getButtonBackgroundColor()+'; '
+        html += '<style>.was-button-container{background:green;cursor:pointer;width:64px;height:64px;margin:20px;position:fixed;bottom:0;border-radius:32px;display:inline-block!important}.was-icon-button{width:auto!important;height:auto!important;line-height:auto!important;font-size:16px;padding:10px;color:#fff}#was-icon{height:42px;width:42px;margin:11px}#was-icon-button-icon{height:14px;padding-right:4px}#was-agents-widget-container{height:500px;width:300px;background:#fff;border-radius:20px;box-shadow:0 0 10px 0 rgba(0,0,0,.1);position:absolute;bottom:0;right:0;margin-bottom:90px;margin-right:20px;z-index:1000}.was-agents-header{padding:14px;border-radius:20px 20px 0 0}.was-agents-header-title{font-size:18px;font-weight:600}.was-agents-header-description{font-size:14px}.was-agent-item-avatar{width:50px;height:50px;border-radius:50%;overflow:hidden;margin-right:10px}.was-agent-item-avatar img{width:100%;height:100%;object-fit:cover}.was-agent-item{display:flex;cursor:pointer;align-items:center;padding:10px;border-bottom:1px solid #e0e0e0;font-size:16px}.was-agent-item-info{display:flex;flex-direction:column;justify-content:center}.was-agent-item-name{font-size:18px}.was-agent-item-role{color:#666;font-size:14px}#was-agents-widget-container{display:none}.was-icon-flag{border-radius:0;background-size:cover!important}</style>';
+        if (config.designType != 'icon-with-text') {
+        html += '\n<div class="was-button-container '+ (config.designType === 'icon-flag' ? 'was-icon-flag' : '') +'" style="background: '+getButtonBackgroundColor()+'; '
                         + ((config.position === 'bottom-left') ? 'left: 0' : 'right: 0') + ';'
                         + 'margin: ' + getButtonMargin(config) + 'px;'
                         + '">'
-                        + '<div id="was-icon" style="background: buttonIconColor; -webkit-mask-image: url(https://cdn.shopify.com/s/files/1/0460/1839/6328/files/waiconmask.svg?v=1623288530); -webkit-mask-size: cover;"></div>'
+                        + (config.designType !== 'icon-flag' ? '<div id="was-icon" style="background: buttonIconColor; -webkit-mask-image: url(https://cdn.shopify.com/s/files/1/0460/1839/6328/files/waiconmask.svg?v=1623288530); -webkit-mask-size: cover;"></div>':'')
                     + '</div>' 
             + '</div>';
         } else {
@@ -164,7 +165,7 @@ var shopDomain;
         }
 
         html += `<div id="was-agents-widget-container">
-            <div class="was-agents-header" style="background: widgetHeaderBackgroundColor; color: #fff">
+            <div class="was-agents-header" style="background: linear-gradient(to bottom right, widgetHeaderBackgroundColor, widgetHeaderSecondaryColor); color: widgetHeaderTextColor">
                 <div class="was-agents-header-title">widgetHeaderTitle</div>
                 <div class="was-agents-header-description">widgetHeaderDescription</div>
             </div>
@@ -264,6 +265,9 @@ var shopDomain;
     function getButtonBackgroundColor() {
         if (config.designType === 'icon-gradient') {
             return 'linear-gradient(to bottom right, ' + config.buttonBackgroundColor + ', ' + config.iconGradientSecondColor + ')';
+        }
+        if (config.designType === 'icon-flag') {
+            return 'url(' + assetBaseUrl + '/images/flags/' + config.buttonIconFlag + '.png)';
         }
         return config.buttonBackgroundColor;
     }
