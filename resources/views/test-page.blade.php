@@ -213,7 +213,135 @@
             </div>
         </div>
     </section>
-    <script type="text/javascript" src="{{ config('app.url') . '/js/wa-chat.js?shop=msm5-2.myshopify.com' }}"></script>
+    {{-- <div id="was-widget-container">
+        <style>
+            .was-button-container {
+                background: green;
+                cursor: pointer;
+                width: 64px;
+                height: 64px;
+                margin: 20px;
+                position: absolute;
+                bottom: 0;
+                border-radius: 32px;
+                display: inline-block !important
+            }
+
+            .was-icon-button {
+                width: auto !important;
+                height: auto !important;
+                line-height: auto !important;
+                font-size: 16px;
+                padding: 10px;
+                color: #fff
+            }
+
+            #was-icon {
+                height: 42px;
+                width: 42px;
+                margin: 11px
+            }
+
+            #was-icon-button-icon {
+                height: 14px;
+                padding-right: 4px
+            }
+
+            #was-agents-widget-container {
+                height: 500px;
+                width: 300px;
+                background: #fff;
+                border-radius: 10px;
+                box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
+                position: absolute;
+                bottom: 0;
+                right: 0;
+                margin-bottom: 90px;
+                margin-right: 20px;
+                z-index: 1000;
+            }
+
+            .was-agents-header {
+                padding: 14px;
+                border-radius: 10px 10px 0 0;
+            }
+
+            .was-agents-header-title {
+                font-size: 1.2rem;
+                font-weight: 600;
+            }
+
+            .was-agents-header-description {
+                font-size: 0.9rem;
+            }
+
+            .was-agents-header-close {
+                font-size: 1.2rem;
+                font-weight: 600;
+                cursor: pointer;
+            }
+
+            .was-agent-item-avatar {
+                width: 50px;
+                height: 50px;
+                border-radius: 50%;
+                overflow: hidden;
+                margin-right: 10px;
+            }
+
+            .was-agent-item-avatar img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+
+            .was-agent-item {
+                display: flex;
+                align-items: center;
+                padding: 10px;
+                border-bottom: 1px solid #e0e0e0;
+            }
+
+            .was-agent-item-info {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+            }
+
+            .was-agent-item-name {
+                font-size: 1.2rem;
+            }
+
+            .was-agent-item-role {
+                color: #666;
+            }
+        </style>
+        <div class="was-button-container" style="background: #42D74C;; right: 0;margin: 20px;">
+            <div id="was-icon"
+                style="background: #FFFFFF; -webkit-mask-image: url(https://cdn.shopify.com/s/files/1/0460/1839/6328/files/waiconmask.svg?v=1623288530); -webkit-mask-size: cover;">
+            </div>
+        </div>
+        <div id="was-agents-widget-container">
+            <div class="was-agents-header" style="background:#42D74C; color: #fff">
+                <div class="was-agents-header-title">Chat with us</div>
+                <div class="was-agents-header-description">We're here to help you with your questions and concerns.
+                </div>
+            </div>
+            <div class="was-agents-list">
+                <div class="was-agent-item">
+                    <div class="was-agent-item-avatar">
+                        <img src="/images/male-avatar.png" alt="Avatar">
+                    </div>
+                    <div class="was-agent-item-info">
+                        <div class="was-agent-item-name">John Doe</div>
+                        <div class="was-agent-item-role">Customer Support</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div> --}}
+    <script type="text/javascript" src="{{ config('app.url') . '/js/wa-chat.js?shop=msm5-2.myshopify.com' }}">
+    </script>
 </body>
 
 </html>

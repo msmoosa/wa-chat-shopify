@@ -7,11 +7,11 @@
         <template v-else>
             <s-section heading="Whatsapp Button">
                 <s-text-field :value="config.phoneNumber" @input="config.phoneNumber = $event.target.value"
-                    label="Whatsapp number" name="phone" placeholder="Enter phone number" />
+                    label="Whatsapp Phone Number" name="phone" placeholder="Enter phone number" />
                 <s-text tone="critical" v-if="isInvalidWhatsappNumber()">
                     Enter a valid whatsapp number with country code</s-text>
                 <s-switch :disabled="isInvalidWhatsappNumber()" :checked="config.isEnabled"
-                    @input="config.isEnabled = $event.target.checked" label="Enable Whatsapp Button" :details="config.phone
+                    @input="config.isEnabled = $event.target.checked" label="Enable Whatsapp Button" :details="!isInvalidWhatsappNumber()
                         ? 'Show the whatsapp button on your store' : 'Please enter a valid whatsapp number'" />
             </s-section>
             <s-section heading="Appearance">
@@ -30,7 +30,8 @@
 
                 <s-select label="Design" name="designType" :value="config.designType"
                     @input="config.designType = $event.target.value">
-                    <s-option value="icon">Icon only</s-option>
+                    <s-option value="icon">Icon</s-option>
+                    <s-option value="icon-gradient">Icon Gradient</s-option>
                     <s-option value="icon-with-text">Icon with Text</s-option>
                 </s-select>
 
@@ -44,18 +45,92 @@
 
                 </template>
 
+                <template v-if="config.designType === 'icon-gradient'">
+                    <s-color-field label="Icon Gradient Second Color" placeholder="Select a color"
+                        :value="config.iconGradientSecondColor"
+                        @input="config.iconGradientSecondColor = $event.target.value"></s-color-field>
+                </template>
+
 
             </s-section>
+            <s-section heading="Advanced">
+                <s-switch label="Enable in Desktop" :checked="config.isEnabledOnDesktop"
+                    @input="config.isEnabledOnDesktop = $event.target.checked" />
+
+                <s-text-field label="Button Margin Desktop" :value="config.buttonMarginDesktop"
+                    @input="config.buttonMarginDesktop = $event.target.value" />
+
+                <s-switch label="Enable in Mobile" :checked="config.isEnabledOnMobile"
+                    @input="config.isEnabledOnMobile = $event.target.checked" />
+                <s-text-field label="Button Margin Mobile" :value="config.buttonMarginMobile"
+                    @input="config.buttonMarginMobile = $event.target.value" />
+            </s-section>
+
+            <s-section heading="Default Message">
+                <s-switch label="Enable Default Message" :checked="config.isDefaultMessageEnabled"
+                    @input="config.isDefaultMessageEnabled = $event.target.checked" />
+                <s-text-field label="Default Message" :value="config.defaultMessageText"
+                    @input="config.defaultMessageText = $event.target.value" />
+            </s-section>
+
+            <s-section heading="Chat Agents Widget">
+                <s-paragraph>Support multiple chat agents by adding their phone numbers below.
+                </s-paragraph>
+                <s-switch label="Enable Chat Agents Widget" :checked="config.isWidgetEnabled"
+                    @input="config.isWidgetEnabled = $event.target.checked" />
+                <s-text-field label="Header Title" :value="config.widgetHeaderTitle"
+                    @input="config.widgetHeaderTitle = $event.target.value" />
+                <s-text-field label="Header Description" :value="config.widgetHeaderDescription"
+                    @input="config.widgetHeaderDescription = $event.target.value" />
+                <s-color-field label="Header Background Color" :value="config.widgetHeaderBackgroundColor"
+                    @input="config.widgetHeaderBackgroundColor = $event.target.value" />
+                <s-color-field label="Header Text Color" :value="config.widgetHeaderTextColor"
+                    @input="config.widgetHeaderTextColor = $event.target.value" />
+
+                <s-table>
+                    <s-table-header-row>
+                        <s-table-header>Name</s-table-header>
+                        <s-table-header>Role</s-table-header>
+                        <s-table-header>Phone Number</s-table-header>
+                        <s-table-header>Gender</s-table-header>
+                        <s-table-header></s-table-header>
+                    </s-table-header-row>
+                    <s-table-body>
+                        <s-table-row v-for="agent in config.widgetAgents" :key="$index">
+                            <s-table-cell><s-text-field :value="agent.name"
+                                    @input="agent.name = $event.target.value" /></s-table-cell>
+                            <s-table-cell><s-text-field :value="agent.role"
+                                    @input="agent.role = $event.target.value" /></s-table-cell>
+                            <s-table-cell><s-text-field :value="agent.phoneNumber"
+                                    @input="agent.phoneNumber = $event.target.value" /></s-table-cell>
+                            <s-table-cell><s-select :value="agent.gender" @input="agent.gender = $event.target.value">
+                                    <s-option value="male">Male</s-option>
+                                    <s-option value="female">Female</s-option>
+                                </s-select></s-table-cell>
+                            <s-table-cell><s-button
+                                    @click="removeAgent(agent.phoneNumber)">Remove</s-button></s-table-cell>
+                        </s-table-row>
+                        <s-table-row>
+                            <s-table-cell><s-button @click="addAgent">Add Agent</s-button></s-table-cell>
+
+                        </s-table-row>
+                    </s-table-body>
+                </s-table>
+
+            </s-section>
+
         </template>
 
         <s-box slot="aside" v-if="!loading">
             <s-section heading="Preview">
-                {{ config }}
-                <br />
+                <!-- {{ config }}
+                <br /> -->
                 <div id="was-preview-background">
-                    <template v-if="config.designType === 'icon'">
-                        <div class="was-button-container" :style="'background: ' + config.buttonBackgroundColor + '; '
-                            + (isLeftPosition() ? 'left: 0' : 'right:0')">
+                    <template v-if="config.designType === 'icon' || config.designType === 'icon-gradient'">
+                        <div class="was-button-container" :style="'background: ' + getButtonBackgroundColor() + '; '
+                            + (isLeftPosition() ? 'left: 0' : 'right:0') + ';'
+                            + 'margin: ' + config.buttonMarginDesktop + 'px;'
+                            + 'width: ' + config.buttonIconSize + 'px; height: ' + config.buttonIconSize + 'px;'">
                             <div id="was-icon"
                                 :style="'background: ' + config.buttonIconColor + '; -webkit-mask-image: url(https://cdn.shopify.com/s/files/1/0460/1839/6328/files/waiconmask.svg?v=1623288530); -webkit-mask-size: cover;'">
                             </div>
@@ -64,7 +139,8 @@
                     <template v-if="config.designType === 'icon-with-text'">
                         <div class="was-button-container was-icon-button" :style="'background: ' + config.buttonBackgroundColor + '; color: ' + config.buttonTextColor + ';'
                             + 'color: ' + config.buttonTextColor + ';'
-                            + (isLeftPosition() ? 'left: 0' : 'right:0')">
+                            + (isLeftPosition() ? 'left: 0' : 'right:0')
+                            + 'margin: ' + config.buttonMarginDesktop + 'px;'">
                             <img id="was-icon-button-icon"
                                 src="https://cdn.shopify.com/s/files/1/0460/1839/6328/files/waiconmask.svg?v=1623288530"
                                 alt="Whatsapp Icon" />
@@ -165,6 +241,23 @@ export default {
         },
         isLeftPosition() {
             return this.config.buttonPosition == 'bottom-left';
+        },
+        addAgent() {
+            this.config.widgetAgents.push({
+                phoneNumber: '',
+                name: '',
+                role: '',
+                gender: 'male'
+            });
+        },
+        removeAgent(phoneNumber) {
+            this.config.widgetAgents = this.config.widgetAgents.filter(agent => agent.phoneNumber !== phoneNumber);
+        },
+        getButtonBackgroundColor() {
+            if (this.config.designType === 'icon-gradient') {
+                return 'linear-gradient(to bottom right, ' + this.config.buttonBackgroundColor + ', ' + this.config.iconGradientSecondColor + ')';
+            }
+            return this.config.buttonBackgroundColor;
         }
     }
 }

@@ -3,6 +3,7 @@ var shopDomain;
     var isDebug = true; // window.location.search.includes('isDebug=true');
     var apiBaseUrl = 'https://wa-chat.test/external';
     var shop = null;
+    var config = null;
 
     function init() {
         if (window.WaChatShopify) {
@@ -104,6 +105,7 @@ var shopDomain;
     function loadStoreInfo() {
         Utilities.request({url: apiBaseUrl + '/store?shop=' + shopDomain, method: 'GET'}).then(function(response) {
             shop = response.data;
+            config = shop.whatsapp_config;
             onShopLoaded();
         }).catch(function(error) {
             logError('Error loading store info: ', error);
@@ -117,7 +119,19 @@ var shopDomain;
     function initWhatsappButton() {
         log('Initializing Whatsapp Button');
         if (!shop.whatsapp_config || !shop.whatsapp_config.isEnabled || !shop.whatsapp_config.phoneNumber) {
-            logError('Whatsapp config not found');
+            logError('Whatsapp config not found or missing phone number');
+            return;
+        }
+
+        var config = shop.whatsapp_config;
+
+        if (!config.isEnabledOnDesktop && !isMobile()) {
+            log('Whatsapp button not enabled on desktop');
+            return;
+        }
+
+        if (!config.isEnabledOnMobile && isMobile()) {
+            log('Whatsapp button not enabled on mobile');
             return;
         }
 
@@ -130,21 +144,34 @@ var shopDomain;
         log('Creating Whatsapp Button');
         const config = shop.whatsapp_config;
         var html = '<div id="was-widget-container">';
-        html += '<style>.was-button-container{background:green;cursor:pointer;width:64px;height:64px;margin:20px;position:absolute;bottom:0;border-radius:32px;display:inline-block!important}.was-icon-button{width:auto!important;height:auto!important;line-height:auto!important;font-size:16px;padding:10px;color:#fff}#was-icon{height:42px;width:42px;margin:11px}#was-icon-button-icon{height:14px;padding-right: 4px}</style>';
-        if (config.design === 'icon') {
-        html += '\n<div class="was-button-container" style="background: buttonBackgroundColor;; '
-                        + ((config.position === 'bottom-left') ? 'left: 0' : 'right: 0') + '">'
+        html += '<style>.was-button-container{background:green;cursor:pointer;width:64px;height:64px;margin:20px;position:fixed;bottom:0;border-radius:32px;display:inline-block!important}.was-icon-button{width:auto!important;height:auto!important;line-height:auto!important;font-size:16px;padding:10px;color:#fff}#was-icon{height:42px;width:42px;margin:11px}#was-icon-button-icon{height:14px;padding-right:4px}#was-agents-widget-container{height:500px;width:300px;background:#fff;border-radius:10px;box-shadow:0 0 10px 0 rgba(0,0,0,.1);position:absolute;bottom:0;right:0;margin-bottom:90px;margin-right:20px;z-index:1000}.was-agents-header{padding:14px;border-radius:10px 10px 0 0}.was-agents-header-title{font-size:1.2rem;font-weight:600}.was-agents-header-description{font-size:.9rem}.was-agents-header-close{font-size:1.2rem;font-weight:600;cursor:pointer}.was-agent-item-avatar{width:50px;height:50px;border-radius:50%;overflow:hidden;margin-right:10px}.was-agent-item-avatar img{width:100%;height:100%;object-fit:cover}.was-agent-item{display:flex;cursor:pointer;align-items:center;padding:10px;border-bottom:1px solid #e0e0e0}.was-agent-item-info{display:flex;flex-direction:column;justify-content:center}.was-agent-item-name{font-size:1.2rem}.was-agent-item-role{color:#666}#was-agents-widget-container{display:none}</style>';
+        if (config.designType === 'icon' || config.designType === 'icon-gradient') {
+        html += '\n<div class="was-button-container" style="background: '+getButtonBackgroundColor()+'; '
+                        + ((config.position === 'bottom-left') ? 'left: 0' : 'right: 0') + ';'
+                        + 'margin: ' + getButtonMargin(config) + 'px;'
+                        + '">'
                         + '<div id="was-icon" style="background: buttonIconColor; -webkit-mask-image: url(https://cdn.shopify.com/s/files/1/0460/1839/6328/files/waiconmask.svg?v=1623288530); -webkit-mask-size: cover;"></div>'
                     + '</div>' 
             + '</div>';
         } else {
             html += '<div class="was-button-container was-icon-button" style="background: buttonBackgroundColor; '
                         + 'color: buttonTextColor; '
-                        + ((config.position === 'bottom-left') ? 'left: 0' : 'right: 0') + '">'
+                        + ((config.position === 'bottom-left') ? 'left: 0' : 'right: 0') + ';'
+                        + 'margin: ' + getButtonMargin(config) + 'px;'
+                        + '">'
                         + '<img id="was-icon-button-icon" src="https://cdn.shopify.com/s/files/1/0460/1839/6328/files/waiconmask.svg?v=1623288530" alt="Whatsapp Icon" />'
                         + config.buttonTextContent + '</div>';
         }
 
+        html += `<div id="was-agents-widget-container">
+            <div class="was-agents-header" style="background: widgetHeaderBackgroundColor; color: #fff">
+                <div class="was-agents-header-title">widgetHeaderTitle</div>
+                <div class="was-agents-header-description">widgetHeaderDescription</div>
+            </div>
+            <div class="was-agents-list">` +
+                getAgentsListHtml() + 
+            `</div>
+        </div>`;
         html = Utilities.replaceBulk(html, config);
         
         // Insert HTML directly into body using insertAdjacentHTML
@@ -152,10 +179,92 @@ var shopDomain;
         document.getElementsByClassName('was-button-container')[0].addEventListener('click', function() {
             log('Whatsapp button clicked');
             // strip + and 00 from phone number beginning
-            const phone = config.phone.replace(/^00/, '').replace(/^\+/, '');
-            window.open('https://wa.me/' + phone, '_blank');
+            if (!config.isWidgetEnabled || config.widgetAgents.length === 0) {
+                const whatsappUrl = getWhatsappDeeplink(config.phoneNumber);
+                window.open(whatsappUrl, '_blank');
+            } else {
+                // show widget
+                showOrHideChatAgentsWidget();
+            }
         });
+        const agentsList = document.getElementsByClassName('was-agent-item');
+        for (const agent of agentsList) {
+            agent.addEventListener('click', function() {
+                const phoneNumber = agent.getAttribute('data-phone-number');
+                const whatsappUrl = getWhatsappDeeplink(phoneNumber);
+                window.open(whatsappUrl, '_blank');
+            });
+        }
     }
 
     init();
+
+    function getWhatsappDeeplink(phoneNumber) {
+        const config = shop.whatsapp_config;
+        const phone = phoneNumber.replace(/^00/, '').replace(/^\+/, '');
+        let whatsappUrl = 'https://wa.me/' + phone;
+        if (config.isDefaultMessageEnabled) {
+            const defaultMessageText = config.defaultMessageText.replace('{pageUrl}', window.location.href);
+            whatsappUrl += '?text=' + encodeURIComponent(defaultMessageText);
+        }
+        return whatsappUrl;
+    }
+
+    function getAgentsListHtml() {
+        const config = shop.whatsapp_config;
+        let html = '';
+        for (const agent of config.widgetAgents) {
+            html += '<div class="was-agent-item" data-phone-number="' + agent.phoneNumber + '">';
+            html += '<div class="was-agent-item-avatar">';
+            html += '<img src="/images/' + agent.gender + '-avatar.png" alt="Avatar">';
+            html += '</div>';
+            html += '<div class="was-agent-item-info">';
+            html += '<div class="was-agent-item-name">' + agent.name + '</div>';
+            html += '<div class="was-agent-item-role">' + agent.role + '</div>';
+            html += '</div>';
+            html += '</div>';
+        }
+        return html;
+    }
+
+    function getButtonMargin(config) {
+        if (isMobile()) {
+            return config.buttonMarginMobile;
+        }
+        return config.buttonMarginDesktop;
+    }
+
+    function isMobile() {
+        return window.innerWidth < 768;
+    }
+
+    function showOrHideChatAgentsWidget() {
+        log('Showing Chat Agents Widget');
+        const wasAgentsWidgetContainer = document.getElementById('was-agents-widget-container');
+        if (wasAgentsWidgetContainer.style.display === 'block') {
+            wasAgentsWidgetContainer.style.display = 'none';
+        } else {
+            wasAgentsWidgetContainer.style.display = 'block';
+        }
+        
+    }
+
+    function getSupportAgentHtml() {
+        const config = shop.whatsapp_config;
+        let html = '';
+        for (const agent of config.widgetAgents) {
+            html += '<div class="was-agent-container">';
+            html += '<div class="was-agent-name">' + agent.name + '</div>';
+            html += '<div class="was-agent-role">' + agent.role + '</div>';
+            html += '</div>';
+        }
+        return html;
+    }
+
+    function getButtonBackgroundColor() {
+        if (config.designType === 'icon-gradient') {
+            return 'linear-gradient(to bottom right, ' + config.buttonBackgroundColor + ', ' + config.iconGradientSecondColor + ')';
+        }
+        return config.buttonBackgroundColor;
+    }
 })();

@@ -5,6 +5,5 @@
 /* Polaris Web Components Styling */
 #app {
     font-family: -apple-system, BlinkMacSystemFont, 'San Francisco', 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
-    height: 100vh;
-    overflow: hidden;
+    min-height: 100vh;
 }

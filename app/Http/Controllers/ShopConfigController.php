@@ -25,7 +25,9 @@ class ShopConfigController extends Controller
             ], 401);
         }
 
+        // fixme: merge with default config
         $whatsappConfig = array_merge($this->getDefaultWhatsappConfig(), $shop->whatsapp_config ?? []);
+        //$whatsappConfig = $this->getDefaultWhatsappConfig();
         $shop->whatsapp_config = $whatsappConfig;
         return response()->json([
             'success' => true,
@@ -82,7 +84,28 @@ class ShopConfigController extends Controller
             'buttonIconColor' => '#FFFFFF',
             'buttonTextColor' => '#FFFFFF',
             'buttonTextContent' => 'Contact Us',
-            'designType' => 'icon'
+            'designType' => 'icon',
+            'buttonIconSize' => 64,
+            'isEnabledOnDesktop' => true,
+            'isEnabledOnMobile' => true,
+            'buttonMarginMobile' => 20,
+            'buttonMarginDesktop' => 20,
+            'isDefaultMessageEnabled' => true,
+            'defaultMessageText' => 'Hi, I\'m looking for help on {pageUrl}',
+            'iconGradientSecondColor' => '#57D4FA',
+            'widgetHeaderTitle' => 'Chat with us',
+            'widgetHeaderDescription' => 'We\'re here to help you with your questions and concerns.',
+            'widgetHeaderBackgroundColor' => '#42D74C',
+            'widgetHeaderTextColor' => '#fff',
+            'isWidgetEnabled' => false,
+            'widgetAgents' => [
+                [
+                    'phoneNumber' => '00918128282282',
+                    'name' => 'John Doe',
+                    'role' => 'Customer Support',
+                    'gender' => 'male'
+                ]
+            ]
         ];
     }
 }
