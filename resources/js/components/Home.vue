@@ -84,6 +84,9 @@
             <s-section heading="Chat Agents Widget">
                 <s-paragraph>Support multiple chat agents by adding their phone numbers below.
                 </s-paragraph>
+                <s-switch label="Enable Chat Agents Widget" :checked="config.isWidgetEnabled"
+                    @input="config.isWidgetEnabled = $event.target.checked" />
+
                 <s-table>
                     <s-table-header-row>
                         <s-table-header>Name</s-table-header>
@@ -114,8 +117,7 @@
                     </s-table-body>
                 </s-table>
 
-                <s-switch label="Enable Chat Agents Widget" :checked="config.isWidgetEnabled"
-                    @input="config.isWidgetEnabled = $event.target.checked" />
+
                 <s-text-field label="Header Title" :value="config.widgetHeaderTitle"
                     @input="config.widgetHeaderTitle = $event.target.value" />
                 <s-text-field label="Header Description" :value="config.widgetHeaderDescription"
