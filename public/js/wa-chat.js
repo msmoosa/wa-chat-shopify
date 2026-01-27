@@ -1,8 +1,8 @@
 (function() {
 var shopDomain;
     var isDebug = true; // window.location.search.includes('isDebug=true');
-    var assetBaseUrl = 'https://wa-chat.test';
-    var apiBaseUrl = 'https://wa-chat.test/external';
+    var assetBaseUrl = 'https://halo.appsft.com';
+    var apiBaseUrl = assetBaseUrl +'/external';
     var shop = null;
     var config = null;
 
