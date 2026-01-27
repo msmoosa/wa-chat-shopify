@@ -19,9 +19,6 @@
                     :value="config.buttonBackgroundColor"
                     @input="config.buttonBackgroundColor = $event.target.value"></s-color-field>
 
-                <s-color-field label="Button Icon Color" placeholder="Select a color" :value="config.buttonIconColor"
-                    @input="config.buttonIconColor = $event.target.value"></s-color-field>
-
                 <s-select label="Position" :value="config.buttonPosition"
                     @input="config.buttonPosition = $event.target.value">
                     <s-option value="bottom-left">Bottom Left</s-option>
@@ -145,9 +142,9 @@
                                 + (isLeftPosition() ? 'left: 0' : 'right:0') + ';'
                                 + 'margin: ' + config.buttonMarginDesktop + 'px;'
                                 + 'width: ' + config.buttonIconSize + 'px; height: ' + config.buttonIconSize + 'px;'">
-                            <div v-if="config.designType !== 'icon-flag'" id="was-icon"
-                                :style="'background: ' + config.buttonIconColor + '; -webkit-mask-image: url(https://cdn.shopify.com/s/files/1/0460/1839/6328/files/waiconmask.svg?v=1623288530); -webkit-mask-size: cover;'">
-                            </div>
+                            <img v-if="config.designType !== 'icon-flag'" id="was-icon"
+                                src="https://cdn.shopify.com/s/files/1/0460/1839/6328/files/waiconmask.svg?v=1623288530"
+                                alt="Whatsapp Icon" />
                         </div>
                     </template>
                     <template v-if="config.designType === 'icon-with-text'">

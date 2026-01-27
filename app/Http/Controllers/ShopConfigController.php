@@ -81,7 +81,6 @@ class ShopConfigController extends Controller
             'isEnabled' => true,
             'buttonPosition' => 'bottom-right',
             'buttonBackgroundColor' => '#42D74C',
-            'buttonIconColor' => '#FFFFFF',
             'buttonTextColor' => '#FFFFFF',
             'buttonTextContent' => 'Contact Us',
             'designType' => 'icon',

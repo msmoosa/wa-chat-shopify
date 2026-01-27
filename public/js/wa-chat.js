@@ -1,7 +1,9 @@
 (function() {
 var shopDomain;
     var isDebug = true; // window.location.search.includes('isDebug=true');
-    var assetBaseUrl = 'https://halo.appsft.com';
+    var testDomain = 'wa-chat.test';
+    var isTestDomain = window.location.hostname.includes(testDomain) || window.location.hostname == ('msm5-2.myshopify.com') ;
+    var assetBaseUrl = !isTestDomain ? 'https://halo.appsft.com' : ('https://' + testDomain);
     var apiBaseUrl = assetBaseUrl +'/external';
     var shop = null;
     var config = null;
@@ -151,7 +153,7 @@ var shopDomain;
                         + ((config.position === 'bottom-left') ? 'left: 0' : 'right: 0') + ';'
                         + 'margin: ' + getButtonMargin(config) + 'px;'
                         + '">'
-                        + (config.designType !== 'icon-flag' ? '<div id="was-icon" style="background: buttonIconColor; -webkit-mask-image: url(https://cdn.shopify.com/s/files/1/0460/1839/6328/files/waiconmask.svg?v=1623288530); -webkit-mask-size: cover;"></div>':'')
+                        + (config.designType !== 'icon-flag' ? '<img id="was-icon" src="https://cdn.shopify.com/s/files/1/0460/1839/6328/files/waiconmask.svg?v=1623288530" alt="Whatsapp Icon" />':'')
                     + '</div>' 
             + '</div>';
         } else {
