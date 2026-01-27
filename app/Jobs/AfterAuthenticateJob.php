@@ -41,18 +41,18 @@ class AfterAuthenticateJob implements ShouldQueue
         // Add your logic here after shop authentication
         // For example, you can install script tags, create webhooks, etc.
         // install script tags from config/shopify-app.php
-        // $scriptTags = config('shopify-app.scripttags');
-        // logger()->debug('ScriptTags To Install: ', ['scriptTags' => $scriptTags]);
+        $scriptTags = config('shopify-app.scripttags');
+        logger()->debug('ScriptTags To Install: ', ['scriptTags' => $scriptTags]);
 
-        // // check if script tags are already installed
-        // $installedScriptTags = $this->shop->apiHelper()->getScriptTags();
-        // logger()->debug('Installed ScriptTags', ['installedScriptTags' => $installedScriptTags]);
-        // $installedScriptTags = $installedScriptTags->toArray();
-        // foreach ($scriptTags as $scriptTag) {
-        //     if (!in_array($scriptTag['src'], $installedScriptTags)) {
-        //         $response = $this->shop->apiHelper()->createScriptTag($scriptTag);
-        //         logger()->debug('ScriptTag created', ['response' => $response]);
-        //     }
-        // }
+        // check if script tags are already installed
+        $installedScriptTags = $this->shop->apiHelper()->getScriptTags();
+        logger()->debug('Installed ScriptTags', ['installedScriptTags' => $installedScriptTags]);
+        $installedScriptTags = $installedScriptTags->toArray();
+        foreach ($scriptTags as $scriptTag) {
+            if (!in_array($scriptTag['src'], $installedScriptTags)) {
+                $response = $this->shop->apiHelper()->createScriptTag($scriptTag);
+                logger()->debug('ScriptTag created', ['response' => $response]);
+            }
+        }
     }
 }
