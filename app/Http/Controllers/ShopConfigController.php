@@ -94,18 +94,13 @@ class ShopConfigController extends Controller
             'iconGradientSecondColor' => '#57D4FA',
             'buttonIconFlag' => 'ind',
             'widgetHeaderTitle' => 'Chat with us',
-            'widgetHeaderDescription' => 'We\'re here to help you with your questions and concerns.',
+            'widgetHeaderDescription' => 'We\'re here to help you with your questions and concerns',
             'widgetHeaderBackgroundColor' => '#42D74C',
             'widgetHeaderSecondaryColor' => '#42D74C',
             'widgetHeaderTextColor' => '#fff',
             'isWidgetEnabled' => false,
             'widgetAgents' => [
-                [
-                    'phoneNumber' => '00918128282282',
-                    'name' => 'John Doe',
-                    'role' => 'Customer Support',
-                    'gender' => 'male'
-                ]
+                
             ]
         ];
     }

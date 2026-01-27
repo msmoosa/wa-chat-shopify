@@ -84,19 +84,6 @@
             <s-section heading="Chat Agents Widget">
                 <s-paragraph>Support multiple chat agents by adding their phone numbers below.
                 </s-paragraph>
-                <s-switch label="Enable Chat Agents Widget" :checked="config.isWidgetEnabled"
-                    @input="config.isWidgetEnabled = $event.target.checked" />
-                <s-text-field label="Header Title" :value="config.widgetHeaderTitle"
-                    @input="config.widgetHeaderTitle = $event.target.value" />
-                <s-text-field label="Header Description" :value="config.widgetHeaderDescription"
-                    @input="config.widgetHeaderDescription = $event.target.value" />
-                <s-color-field label="Header Background Color" :value="config.widgetHeaderBackgroundColor"
-                    @input="config.widgetHeaderBackgroundColor = $event.target.value" />
-                <s-color-field label="Header Secondary Color" :value="config.widgetHeaderSecondaryColor"
-                    @input="config.widgetHeaderSecondaryColor = $event.target.value" />
-                <s-color-field label="Header Text Color" :value="config.widgetHeaderTextColor"
-                    @input="config.widgetHeaderTextColor = $event.target.value" />
-
                 <s-table>
                     <s-table-header-row>
                         <s-table-header>Name</s-table-header>
@@ -126,6 +113,21 @@
                         </s-table-row>
                     </s-table-body>
                 </s-table>
+
+                <s-switch label="Enable Chat Agents Widget" :checked="config.isWidgetEnabled"
+                    @input="config.isWidgetEnabled = $event.target.checked" />
+                <s-text-field label="Header Title" :value="config.widgetHeaderTitle"
+                    @input="config.widgetHeaderTitle = $event.target.value" />
+                <s-text-field label="Header Description" :value="config.widgetHeaderDescription"
+                    @input="config.widgetHeaderDescription = $event.target.value" />
+                <s-color-field label="Header Background Color" :value="config.widgetHeaderBackgroundColor"
+                    @input="config.widgetHeaderBackgroundColor = $event.target.value" />
+                <s-color-field label="Header Secondary Color" :value="config.widgetHeaderSecondaryColor"
+                    @input="config.widgetHeaderSecondaryColor = $event.target.value" />
+                <s-color-field label="Header Text Color" :value="config.widgetHeaderTextColor"
+                    @input="config.widgetHeaderTextColor = $event.target.value" />
+
+
 
             </s-section>
 
