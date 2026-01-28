@@ -1,6 +1,7 @@
 import { createRouter, createWebHashHistory } from 'vue-router';
 import AbandonedCarts from '../components/AbandonedCarts.vue';
 import Home from '../components/Home.vue';
+import Templates from '../components/Templates.vue';
 
 // Store initial data from Laravel
 let initialData = {};
@@ -22,6 +23,14 @@ const routes = [
         path: '/abandoned-carts',
         name: 'abandoned-carts',
         component: AbandonedCarts,
+        props: (route) => ({
+            shopDomain: initialData.shopDomain 
+        }),
+    },
+    {
+        path: '/templates',
+        name: 'templates',
+        component: Templates,
         props: (route) => ({
             shopDomain: initialData.shopDomain 
         }),

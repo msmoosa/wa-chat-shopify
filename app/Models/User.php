@@ -58,4 +58,9 @@ class User extends Authenticatable implements IShopModel
     {
         return $this->hasMany(Checkout::class);
     }
+
+    public function manualTemplates()
+    {
+        return $this->hasMany(ManualTemplate::class);
+    }
 }
