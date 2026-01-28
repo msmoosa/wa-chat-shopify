@@ -108,7 +108,7 @@ export default {
             try {
                 // open a window to send message to whatsapp with template content
                 let phoneNumber = checkout.phone_number.replace(/^00/, '').replace(/^\+/, '');
-                window.open(`https://wa.me/${phoneNumber}?text=` + window.encodeURIComponent(template.message), '_blank');
+                window.open(`https://wa.me/${phoneNumber}?text=` + this.getTemplateContent(template, checkout), '_blank');
                 // mark as sent
                 const response = await fetch(`/api/checkouts/${checkout.id}/send-message`, {
                     method: 'POST',
@@ -143,6 +143,12 @@ export default {
             if (result.success && result.data) {
                 this.templates = result.data;
             }
+        },
+        getTemplateContent(template, checkout) {
+            let message = template.message.replace('{customer_name}', checkout.customer_name)
+                .replace('{checkout_url}', checkout.abandoned_checkout_url)
+                .replace('{total_price}', checkout.total_price);
+            return window.encodeURIComponent(message);
         }
     },
 }
