@@ -1,6 +1,6 @@
 (function() {
 var shopDomain;
-    var isDebug = true; // window.location.search.includes('isDebug=true');
+    var isDebug = window.location.search.includes('isDebug=true');
     var testDomain = 'wa-chat.test';
     var isTestDomain = window.location.hostname.includes(testDomain) || window.location.hostname == ('msm5-2.myshopify.com') ;
     var assetBaseUrl = !isTestDomain ? 'https://halo.appsft.com' : ('https://' + testDomain);
