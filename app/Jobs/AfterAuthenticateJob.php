@@ -54,5 +54,19 @@ class AfterAuthenticateJob implements ShouldQueue
                 logger()->debug('ScriptTag created', ['response' => $response]);
             }
         }
+
+        // install webhooks from config/shopify-app.php
+        $webhooks = config('shopify-app.webhooks');
+        logger()->debug('Webhooks To Install: ', ['count' => count($webhooks), 'webhooks' => $webhooks]);
+        $installedWebhooks = $this->shop->apiHelper()->getWebhooks();
+        logger()->debug('Installed Webhooks', ['count' => count($installedWebhooks), 'installedWebhooks' => $installedWebhooks]);
+        $installedWebhooks = $installedWebhooks->toArray();
+        $installedWebhooksJson = json_encode($installedWebhooks);
+        foreach ($webhooks as $webhook) {
+            if (!str_contains($installedWebhooksJson, $webhook['topic'])) {
+                $response = $this->shop->apiHelper()->createWebhook($webhook);
+                logger()->debug('Webhook created for topic: ' . $webhook['topic'], ['response' => $response]);
+            }
+        }
     }
 }

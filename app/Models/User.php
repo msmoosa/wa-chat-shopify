@@ -50,4 +50,12 @@ class User extends Authenticatable implements IShopModel
             //'password' => 'hashed',
         ];
     }
+
+    /**
+     * Get the checkouts for the shop.
+     */
+    public function checkouts()
+    {
+        return $this->hasMany(Checkout::class);
+    }
 }
