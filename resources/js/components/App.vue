@@ -1,5 +1,9 @@
 <template>
     <div id="app">
+        <s-app-nav>
+            <s-link href="/" rel="home">Home</s-link>
+            <s-link href="/abandoned-carts">Abandoned Carts</s-link>
+        </s-app-nav>
         <router-view :key="$route.fullPath" />
     </div>
 </template>

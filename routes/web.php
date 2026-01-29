@@ -10,7 +10,6 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index'])
     ->middleware(['verify.shopify'])->name('home');
-
 // Test page route
 Route::get('/test/page', [TestPageController::class, 'index'])
     ->name('test.page');
@@ -53,6 +52,18 @@ Route::post('/api/checkouts/{checkoutId}/send-message', [CheckoutsController::cl
     ->middleware(['verify.shopify'])
     ->name('api.checkouts.send-message');
 
+// API endpoint to get checkout analytics for the authenticated shop
+Route::get('/api/checkouts/analytics', [CheckoutsController::class, 'getAnalytics'])
+    ->middleware(['verify.shopify'])
+    ->name('api.checkouts.analytics');
+
 // External API endpoint to get store/user by domain
 Route::match(['GET', 'OPTIONS'], '/external/store', [ExternalStoreController::class, 'getStore'])
     ->name('external.store');
+
+// Vue.js SPA catch-all route - must be LAST to catch all frontend routes
+// This serves the Vue app for any route that doesn't match the above routes
+Route::get('/{any}', [HomeController::class, 'index'])
+    ->where('any', '.*')
+    ->middleware(['verify.shopify'])
+    ->name('spa');

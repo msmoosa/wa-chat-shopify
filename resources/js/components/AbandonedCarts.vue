@@ -11,9 +11,46 @@
             <s-box padding="large none">
                 <s-text padding="base">Look at your abandoned carts and recover them.</s-text>
             </s-box>
+            <s-box padding="large">
+
+                <s-grid v-if="analytics && analytics.overall"
+                    gridTemplateColumns="@container (inline-size <= 400px) 1fr, 1fr auto 1fr auto 1fr" gap="small">
+                    <s-clickable href="" paddingBlock="small-400" paddingInline="small-100" borderRadius="base">
+                        <s-grid gap="small-300">
+                            <s-heading>Total Recovered Revenue</s-heading>
+                            <s-stack direction="inline" gap="small-200">
+                                <s-text>{{ analytics.overall.recovered_revenue_usd }}</s-text>
+
+                            </s-stack>
+                        </s-grid>
+                    </s-clickable>
+                    <s-divider direction="block" />
+                    <s-clickable href="" paddingBlock="small-400" paddingInline="small-100" borderRadius="base">
+                        <s-grid gap="small-300">
+                            <s-heading>Recovered Carts</s-heading>
+                            <s-stack direction="inline" gap="small-200">
+                                <s-text>{{ analytics.overall.recovered_checkouts }}</s-text>
+                            </s-stack>
+                        </s-grid>
+                    </s-clickable>
+                    <s-divider direction="block" />
+                    <s-clickable href="" paddingBlock="small-400" paddingInline="small-100" borderRadius="base">
+                        <s-grid gap="small-300">
+                            <s-heading>Abandoned Checkouts</s-heading>
+                            <s-stack direction="inline" gap="small-200">
+                                <s-text>{{ analytics.overall.abandoned_checkouts }}</s-text>
+
+                            </s-stack>
+                        </s-grid>
+                    </s-clickable>
+                </s-grid>
+            </s-box>
             <s-box padding="small">
-                <s-button :variant="page == 'abandoned'" @click="showAbandonedCarts()">Abandoned Carts</s-button>
-                <s-button :variant="page == 'recoveries'" @click="showRecoveredCarts()">Recoveries</s-button>
+                <s-button :variant="page == 'abandoned' ? 'primary' : 'secondary'"
+                    @click="showAbandonedCarts()">Abandoned
+                    Carts</s-button>
+                <s-button :variant="page == 'recoveries' ? 'primary' : 'secondary'"
+                    @click="showRecoveredCarts()">Recoveries</s-button>
             </s-box>
             <s-box v-if="state == 'loading'" padding="large">
                 <s-spinner accessibilityLabel="Loading" size="large-100"></s-spinner>
@@ -72,12 +109,14 @@ export default {
             page: 'abandoned',
             checkouts: [],
             templates: [],
+            analytics: null,
             state: 'loading'
         }
     },
     mounted() {
         this.getCheckouts();
         this.getTemplates();
+        this.getAnalytics();
     },
     methods: {
         async getCheckouts() {
@@ -176,6 +215,7 @@ export default {
             this.getRecoveries();
         },
         async getRecoveries() {
+            this.state = 'loading';
             const response = await fetch('/api/recoveries', {
                 method: 'GET',
                 headers: {
@@ -190,6 +230,24 @@ export default {
             const result = await response.json();
             if (result.success && result.data) {
                 this.checkouts = result.data;
+                this.state = 'loaded';
+            }
+        },
+        async getAnalytics() {
+            const response = await fetch('/api/checkouts/analytics', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                credentials: 'same-origin'
+            });
+            if (!response.ok) {
+                throw new Error('Failed to load analytics');
+            }
+            const result = await response.json();
+            if (result.success && result.data) {
+                this.analytics = result.data;
             }
         }
     },

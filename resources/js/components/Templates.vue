@@ -3,7 +3,9 @@
         <s-section>
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
                 <s-heading>Templates</s-heading>
-                <s-button variant="primary" @click="newTemplate">Add template</s-button>
+                <s-box>
+                    <s-button variant="primary" @click="newTemplate()">Add template</s-button>
+                </s-box>
             </div>
 
             <s-text tone="subdued">
@@ -173,6 +175,9 @@ export default {
                 this.deletingId = null;
             }
         },
+    },
+    navigateToAbandonedCarts() {
+        this.$router.push('/abandoned-carts');
     },
 };
 </script>

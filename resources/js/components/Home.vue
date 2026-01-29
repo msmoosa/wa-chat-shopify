@@ -5,10 +5,6 @@
         </s-section>
 
         <template v-else>
-            <s-stack spacing="tight">
-                <s-button @click="navigateToAbandonedCarts">Abandoned Carts</s-button>
-            </s-stack>
-
             <s-section heading="Whatsapp Button">
                 <s-text-field :value="config.phoneNumber" @input="config.phoneNumber = $event.target.value"
                     label="Whatsapp Phone Number" name="phone" placeholder="Enter phone number" />
