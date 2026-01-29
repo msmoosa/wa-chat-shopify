@@ -120,17 +120,50 @@
                     </s-table-body>
                 </s-table>
 
+                <div style="display: flex; flex-direction: row; gap: 20px;margin-top: 20px">
+                    <div style="flex: 1;">
+                        <s-text-field label="Header Title" :value="config.widgetHeaderTitle"
+                            @input="config.widgetHeaderTitle = $event.target.value" />
+                        <s-text-field label="Header Description" :value="config.widgetHeaderDescription"
+                            @input="config.widgetHeaderDescription = $event.target.value" />
+                        <s-color-field label="Header Background Color" :value="config.widgetHeaderBackgroundColor"
+                            @input="config.widgetHeaderBackgroundColor = $event.target.value" />
+                        <s-color-field label="Header Secondary Color" :value="config.widgetHeaderSecondaryColor"
+                            @input="config.widgetHeaderSecondaryColor = $event.target.value" />
+                        <s-color-field label="Header Text Color" :value="config.widgetHeaderTextColor"
+                            @input="config.widgetHeaderTextColor = $event.target.value" />
+                    </div>
+                    <div style="flex: 1;">
+                        <div style="border: 1px solid #CCC; border-radius: 20px;">
+                            <div class="was-agents-header"
+                                :style="'background: linear-gradient(to bottom right, ' + config.widgetHeaderBackgroundColor + ', ' + config.widgetHeaderSecondaryColor + ');color: ' + config.widgetHeaderTextColor + ';'">
+                                <div class="was-agents-header-title">
+                                    {{ config.widgetHeaderTitle }}
+                                </div>
+                                <div class="was-agents-header-description">
+                                    {{ config.widgetHeaderDescription }}
+                                </div>
+                            </div>
+                            <div class="was-agents-widget-container">
+                                <div class="was-agent-item" v-for="agent in config.widgetAgents"
+                                    :key="agent.phoneNumber">
+                                    <div class="was-agent-item-avatar">
+                                        <img :src="'/images/' + agent.gender + '-avatar.png'" alt="Agent Icon" />
+                                    </div>
+                                    <div class="was-agent-item-info">
+                                        <div class="was-agent-item-name">{{ agent.name }}</div>
+                                        <div class="was-agent-item-role">{{ agent.role }}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-                <s-text-field label="Header Title" :value="config.widgetHeaderTitle"
-                    @input="config.widgetHeaderTitle = $event.target.value" />
-                <s-text-field label="Header Description" :value="config.widgetHeaderDescription"
-                    @input="config.widgetHeaderDescription = $event.target.value" />
-                <s-color-field label="Header Background Color" :value="config.widgetHeaderBackgroundColor"
-                    @input="config.widgetHeaderBackgroundColor = $event.target.value" />
-                <s-color-field label="Header Secondary Color" :value="config.widgetHeaderSecondaryColor"
-                    @input="config.widgetHeaderSecondaryColor = $event.target.value" />
-                <s-color-field label="Header Text Color" :value="config.widgetHeaderTextColor"
-                    @input="config.widgetHeaderTextColor = $event.target.value" />
+                </div>
+                <div style="margin-top:10px">
+                    <s-button @click="saveConfig" variant="primary" :loading="saving">Save</s-button>
+                </div>
+
 
 
 
@@ -332,5 +365,48 @@ export default {
 .was-icon-flag {
     border-radius: 0;
     background-size: cover !important;
+}
+
+.was-agents-header {
+    padding: 14px;
+    border-radius: 20px 20px 0 0
+}
+
+.was-agents-header-title {
+    font-size: 18px;
+    font-weight: 600
+}
+
+.was-agents-header-description {
+    font-size: 14px
+}
+
+.was-agent-item-avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    overflow: hidden;
+    margin-right: 10px
+}
+
+.was-agent-item-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover
+}
+
+.was-agent-item {
+    display: flex;
+    cursor: pointer;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 1px solid #e0e0e0;
+    font-size: 16px
+}
+
+.was-agent-item-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center
 }
 </style>
