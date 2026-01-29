@@ -9,7 +9,9 @@ use App\Http\Controllers\ManualTemplateController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index'])
-    ->middleware(['verify.shopify'])->name('home');
+    ->middleware(['verify.shopify'])
+    ->name('home');
+
 // Test page route
 Route::get('/test/page', [TestPageController::class, 'index'])
     ->name('test.page');
