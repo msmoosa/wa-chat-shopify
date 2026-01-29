@@ -8,7 +8,7 @@ use Illuminate\Queue\SerializesModels;
 use Osiset\ShopifyApp\Contracts\ShopModel as IShopModel;
 use App\Models\User;
 use App\Models\ManualTemplate;
-
+use App\Jobs\SlackNotificationJob;
 class AfterAuthenticateJob implements ShouldQueue
 {
     use Queueable, SerializesModels;
@@ -49,31 +49,32 @@ class AfterAuthenticateJob implements ShouldQueue
         logger()->debug('ScriptTags To Install: ', ['scriptTags' => $scriptTags]);
 
         // check if script tags are already installed
-        $installedScriptTags = $this->shop->apiHelper()->getScriptTags();
-        logger()->debug('Installed ScriptTags', ['installedScriptTags' => $installedScriptTags]);
-        $installedScriptTags = $installedScriptTags->toArray();
-        foreach ($scriptTags as $scriptTag) {
-            if (!in_array($scriptTag['src'], $installedScriptTags)) {
-                $response = $this->shop->apiHelper()->createScriptTag($scriptTag);
-                logger()->debug('ScriptTag created', ['response' => $response]);
-            }
-        }
+        // $installedScriptTags = $this->shop->apiHelper()->getScriptTags();
+        // logger()->debug('Installed ScriptTags', ['installedScriptTags' => $installedScriptTags]);
+        // $installedScriptTags = $installedScriptTags->toArray();
+        // foreach ($scriptTags as $scriptTag) {
+        //     if (!in_array($scriptTag['src'], $installedScriptTags)) {
+        //         $response = $this->shop->apiHelper()->createScriptTag($scriptTag);
+        //         logger()->debug('ScriptTag created', ['response' => $response]);
+        //     }
+        // }
 
         // install webhooks from config/shopify-app.php
-        $webhooks = config('shopify-app.webhooks');
-        logger()->debug('Webhooks To Install: ', ['count' => count($webhooks), 'webhooks' => $webhooks]);
-        $installedWebhooks = $this->shop->apiHelper()->getWebhooks();
-        logger()->debug('Installed Webhooks', ['count' => count($installedWebhooks), 'installedWebhooks' => $installedWebhooks]);
-        $installedWebhooks = $installedWebhooks->toArray();
-        $installedWebhooksJson = json_encode($installedWebhooks);
-        foreach ($webhooks as $webhook) {
-            if (!str_contains($installedWebhooksJson, $webhook['topic'])) {
-                $response = $this->shop->apiHelper()->createWebhook($webhook);
-                logger()->debug('Webhook created for topic: ' . $webhook['topic'], ['response' => $response]);
-            }
-        }
+        // $webhooks = config('shopify-app.webhooks');
+        // logger()->debug('Webhooks To Install: ', ['count' => count($webhooks), 'webhooks' => $webhooks]);
+        // $installedWebhooks = $this->shop->apiHelper()->getWebhooks();
+        // logger()->debug('Installed Webhooks', ['count' => count($installedWebhooks), 'installedWebhooks' => $installedWebhooks]);
+        // $installedWebhooks = $installedWebhooks->toArray();
+        // $installedWebhooksJson = json_encode($installedWebhooks);
+        // foreach ($webhooks as $webhook) {
+        //     if (!str_contains($installedWebhooksJson, $webhook['topic'])) {
+        //         $response = $this->shop->apiHelper()->createWebhook($webhook);
+        //         logger()->debug('Webhook created for topic: ' . $webhook['topic'], ['response' => $response]);
+        //     }
+        // }
 
         $this->addDefaultMessageTemplates($user);
+        SlackNotificationJob::dispatch('config_saved', $user);
     }
 
     private function addDefaultMessageTemplates(User $user)

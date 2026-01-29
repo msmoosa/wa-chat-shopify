@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Jobs\SlackNotificationJob;
 
 class ShopConfigController extends Controller
 {
@@ -60,6 +61,8 @@ class ShopConfigController extends Controller
             $shop->whatsapp_config = $whatsappConfig;
             /** @var \App\Models\User $shop */
             $shop->save();
+
+            SlackNotificationJob::dispatch('config_saved', $shop);
 
             return response()->json([
                 'success' => true,

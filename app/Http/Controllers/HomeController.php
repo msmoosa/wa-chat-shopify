@@ -13,10 +13,7 @@ class HomeController extends Controller
     function index() {
         $shop = Auth::user();
         $shopDomain = $shop->name ?? '';
-        // dispatch a job to WebhookInstaller
-        AfterAuthenticateJob::dispatch($shop);
-        
-
+        // AfterAuthenticateJob::dispatch($shop);
         return view('welcome', compact('shop', 'shopDomain'));
     }
 }
