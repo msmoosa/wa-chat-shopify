@@ -147,10 +147,10 @@ var shopDomain;
         log('Creating Whatsapp Button');
         const config = shop.whatsapp_config;
         var html = '<div id="was-widget-container">';
-        html += '<style>#was-widget-container{z-index:10000;}.was-button-container{background:green;cursor:pointer;width:64px;height:64px;margin:20px;position:fixed;bottom:0;border-radius:32px;display:inline-block!important}.was-icon-button{width:auto!important;height:auto!important;line-height:auto!important;font-size:16px;padding:10px;color:#fff}#was-icon{height:42px;width:42px;margin:11px}#was-icon-button-icon{height:14px;padding-right:4px}#was-agents-widget-container{height:500px;width:300px;background:#fff;border-radius:20px;box-shadow:0 0 10px 0 rgba(0,0,0,.1);position:fixed;bottom:0;right:0;margin-bottom:90px;margin-right:20px;z-index:1000}.was-agents-header{padding:14px;border-radius:20px 20px 0 0}.was-agents-header-title{font-size:18px;font-weight:600}.was-agents-header-description{font-size:14px}.was-agent-item-avatar{width:50px;height:50px;border-radius:50%;overflow:hidden;margin-right:10px}.was-agent-item-avatar img{width:100%;height:100%;object-fit:cover}.was-agent-item{display:flex;cursor:pointer;align-items:center;padding:10px;border-bottom:1px solid #e0e0e0;font-size:16px}.was-agent-item-info{display:flex;flex-direction:column;justify-content:center}.was-agent-item-name{font-size:18px}.was-agent-item-role{color:#666;font-size:14px}#was-agents-widget-container{display:none}.was-icon-flag{border-radius:0;background-size:cover!important;}#was-agents-widget-container{border: 1px solid #CCC;}</style>';
+        html += '<style>#was-widget-container{z-index:10000;}.was-button-container{background:green;cursor:pointer;width:64px;height:64px;margin:20px;position:fixed;bottom:0;border-radius:32px;display:inline-block!important}.was-icon-button{width:auto!important;height:auto!important;line-height:auto!important;font-size:16px;padding:10px;color:#fff}#was-icon{height:42px;width:42px;margin:11px}#was-icon-button-icon{height:14px;padding-right:4px}#was-agents-widget-container{height:400px;width:250px;background:#fff;border-radius:20px;box-shadow:0 0 10px 0 rgba(0,0,0,.1);position:fixed;bottom:0;z-index:1000}.was-agents-header{padding:14px;border-radius:20px 20px 0 0}.was-agents-header-title{font-size:18px;font-weight:600}.was-agents-header-description{font-size:14px}.was-agent-item-avatar{width:50px;height:50px;border-radius:50%;overflow:hidden;margin-right:10px}.was-agent-item-avatar img{width:100%;height:100%;object-fit:cover}.was-agent-item{display:flex;cursor:pointer;align-items:center;padding:10px;border-bottom:1px solid #e0e0e0;font-size:16px}.was-agent-item-info{display:flex;flex-direction:column;justify-content:center}.was-agent-item-name{font-size:18px}.was-agent-item-role{color:#666;font-size:14px}#was-agents-widget-container{display:none}.was-icon-flag{border-radius:0;background-size:cover!important;}#was-agents-widget-container{border: 1px solid #CCC;}</style>';
         if (config.designType != 'icon-with-text') {
         html += '\n<div class="was-button-container '+ (config.designType === 'icon-flag' ? 'was-icon-flag' : '') +'" style="background: '+getButtonBackgroundColor()+'; '
-                        + ((config.position === 'bottom-left') ? 'left: 0' : 'right: 0') + ';'
+                        + ((config.buttonPosition === 'bottom-left') ? 'left: 0' : 'right: 0') + ';'
                         + 'margin: ' + getButtonMargin(config) + 'px;'
                         + '">'
                         + (config.designType !== 'icon-flag' ? '<img id="was-icon" src="https://cdn.shopify.com/s/files/1/0460/1839/6328/files/waiconmask.svg?v=1623288530" alt="Whatsapp Icon" />':'')
@@ -159,14 +159,17 @@ var shopDomain;
         } else {
             html += '<div class="was-button-container was-icon-button" style="background: buttonBackgroundColor; '
                         + 'color: buttonTextColor; '
-                        + ((config.position === 'bottom-left') ? 'left: 0' : 'right: 0') + ';'
+                        + ((config.buttonPosition === 'bottom-left') ? 'left: 0' : 'right: 0') + ';'
                         + 'margin: ' + getButtonMargin(config) + 'px;'
                         + '">'
                         + '<img id="was-icon-button-icon" src="https://cdn.shopify.com/s/files/1/0460/1839/6328/files/waiconmask.svg?v=1623288530" alt="Whatsapp Icon" />'
                         + config.buttonTextContent + '</div>';
         }
 
-        html += `<div id="was-agents-widget-container">
+        html += `<div id="was-agents-widget-container" style="`
+        + (config.buttonPosition === 'bottom-left' ? 'left: 0' : 'right: 0') + ';'
+        + 'margin-bottom: 90px; margin-' + (config.buttonPosition == 'bottom-left' ? 'left' : 'right') + ': ' + getButtonMargin(config) + 'px;'
+        + `">
             <div class="was-agents-header" style="background: linear-gradient(to bottom right, widgetHeaderBackgroundColor, widgetHeaderSecondaryColor); color: widgetHeaderTextColor">
                 <div class="was-agents-header-title">widgetHeaderTitle</div>
                 <div class="was-agents-header-description">widgetHeaderDescription</div>

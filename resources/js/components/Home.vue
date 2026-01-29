@@ -8,10 +8,10 @@
             <s-section heading="Whatsapp Button">
                 <s-text-field :value="config.phoneNumber" @input="config.phoneNumber = $event.target.value"
                     label="Whatsapp Phone Number" name="phone" placeholder="Enter phone number" />
-                <s-text tone="critical" v-if="isInvalidWhatsappNumber()">
+                <s-text tone="critical" v-if="isInvalidWhatsappNumber(config.phoneNumber)">
                     Enter a valid whatsapp number with country code</s-text>
-                <s-switch :disabled="isInvalidWhatsappNumber()" :checked="config.isEnabled"
-                    @input="config.isEnabled = $event.target.checked" label="Enable Whatsapp Button" :details="!isInvalidWhatsappNumber()
+                <s-switch :disabled="isInvalidWhatsappNumber(config.phoneNumber)" :checked="config.isEnabled"
+                    @input="config.isEnabled = $event.target.checked" label="Enable Whatsapp Button" :details="!isInvalidWhatsappNumber(config.phoneNumber)
                         ? 'Show the whatsapp button on your store' : 'Please enter a valid whatsapp number'" />
             </s-section>
             <s-section heading="Appearance">
@@ -102,7 +102,10 @@
                             <s-table-cell><s-text-field :value="agent.role"
                                     @input="agent.role = $event.target.value" /></s-table-cell>
                             <s-table-cell><s-text-field :value="agent.phoneNumber"
-                                    @input="agent.phoneNumber = $event.target.value" /></s-table-cell>
+                                    @input="agent.phoneNumber = $event.target.value" />
+                                <s-text tone="critical" v-if="isInvalidWhatsappNumber(agent.phoneNumber)">
+                                    Enter Valid number</s-text>
+                            </s-table-cell>
                             <s-table-cell><s-select :value="agent.gender" @input="agent.gender = $event.target.value">
                                     <s-option value="male">Male</s-option>
                                     <s-option value="female">Female</s-option>
@@ -247,12 +250,12 @@ export default {
                 this.loading = false;
             }
         },
-        isValidWhatsappNumber() {
-            const phone = this.config.phoneNumber || '';
+        isValidWhatsappNumber(number) {
+            const phone = number || '';
             return phone.length >= 10 && (phone.startsWith('+') || phone.startsWith('00'));
         },
-        isInvalidWhatsappNumber() {
-            return !this.isValidWhatsappNumber();
+        isInvalidWhatsappNumber(number) {
+            return !this.isValidWhatsappNumber(number);
         },
         isLeftPosition() {
             return this.config.buttonPosition == 'bottom-left';
