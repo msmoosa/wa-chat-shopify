@@ -30,6 +30,11 @@ Route::get('/api/abandonedCheckouts', [CheckoutsController::class, 'getAbandoned
     ->middleware(['verify.shopify'])
     ->name('api.abandoned-checkouts');
 
+// API endpoint to get recoveries (completed checkouts with message sent)
+Route::get('/api/recoveries', [CheckoutsController::class, 'getRecoveries'])
+    ->middleware(['verify.shopify'])
+    ->name('api.recoveries');
+
 // Manual template endpoints
 Route::get('/manualtemplates', [ManualTemplateController::class, 'index'])
     ->middleware(['verify.shopify'])

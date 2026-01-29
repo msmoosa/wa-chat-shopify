@@ -8,14 +8,23 @@
                     <s-button @click="navigateToTemplates()">Templates</s-button>
                 </div>
             </div>
-            <s-box padding="large none"><s-text padding="base">Look at your abandoned carts and recover them.
-                </s-text></s-box>
-            <s-table style="margin-top: 20px" :data="abandonedCarts" :columns="columns">
+            <s-box padding="large none">
+                <s-text padding="base">Look at your abandoned carts and recover them.</s-text>
+            </s-box>
+            <s-box padding="small">
+                <s-button :variant="page == 'abandoned'" @click="showAbandonedCarts()">Abandoned Carts</s-button>
+                <s-button :variant="page == 'recoveries'" @click="showRecoveredCarts()">Recoveries</s-button>
+            </s-box>
+            <s-box v-if="state == 'loading'" padding="large">
+                <s-spinner accessibilityLabel="Loading" size="large-100"></s-spinner>
+            </s-box>
+            <s-table v-else style="margin-top: 20px" :data="abandonedCarts" :columns="columns">
                 <s-table-header-row>
                     <s-table-header>Name</s-table-header>
                     <s-table-header>Amount</s-table-header>
                     <s-table-header>Created At</s-table-header>
-                    <s-table-header>Message</s-table-header>
+                    <s-table-header v-if="page == 'abandoned'">Message</s-table-header>
+                    <s-table-header v-if="page == 'recoveries'">Recovered</s-table-header>
                     <s-table-header>Checkout Id</s-table-header>
                     <s-table-header>Action</s-table-header>
                 </s-table-header-row>
@@ -24,8 +33,13 @@
                         <s-table-cell>{{ checkout.customer_name }}</s-table-cell>
                         <s-table-cell>{{ checkout.total_price }}</s-table-cell>
                         <s-table-cell>{{ new Date(checkout.checkout_created_at).toLocaleString() }}</s-table-cell>
-                        <s-table-cell><s-badge :tone="checkout.is_message_sent ? 'success' : 'draft'">
+                        <s-table-cell v-if="page == 'abandoned'"><s-badge
+                                :tone="checkout.is_message_sent ? 'success' : 'draft'">
                                 {{ checkout.is_message_sent ? 'Sent' : 'Not Sent' }}
+                            </s-badge></s-table-cell>
+                        <s-table-cell v-if="page == 'recoveries'"><s-badge
+                                :tone="checkout.is_message_sent ? 'success' : 'draft'">
+                                {{ checkout.is_message_sent ? 'Recovered' : 'Not recovered' }}
                             </s-badge></s-table-cell>
                         <s-table-cell>{{ checkout.shopify_checkout_id }}</s-table-cell>
                         <s-table-cell>
@@ -34,7 +48,7 @@
                                 <s-option>Send Message</s-option>
                                 <s-option v-for="template in templates" :value="template.id" :key="template.id">{{
                                     template.title
-                                }}</s-option>
+                                    }}</s-option>
                             </s-select>
                             <s-text v-else>No phone number</s-text>
                         </s-table-cell>
@@ -55,6 +69,7 @@ export default {
     },
     data() {
         return {
+            page: 'abandoned',
             checkouts: [],
             templates: [],
             state: 'loading'
@@ -146,9 +161,36 @@ export default {
         },
         getTemplateContent(template, checkout) {
             let message = template.message.replace('{customer_name}', checkout.customer_name)
-                .replace('{checkout_url}', checkout.abandoned_checkout_url)
+                .replace('{checkout_url}', checkout.cart_permalink)
                 .replace('{total_price}', checkout.total_price);
             return window.encodeURIComponent(message);
+        },
+        showAbandonedCarts() {
+            this.checkouts = [];
+            this.page = 'abandoned';
+            this.getCheckouts();
+        },
+        showRecoveredCarts() {
+            this.checkouts = [];
+            this.page = 'recoveries';
+            this.getRecoveries();
+        },
+        async getRecoveries() {
+            const response = await fetch('/api/recoveries', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                credentials: 'same-origin'
+            });
+            if (!response.ok) {
+                throw new Error('Failed to load recoveries');
+            }
+            const result = await response.json();
+            if (result.success && result.data) {
+                this.checkouts = result.data;
+            }
         }
     },
 }

@@ -10,7 +10,7 @@ use stdClass;
 use App\Models\User;
 use App\Services\CheckoutService;
 
-class OrdersUpdateJob implements ShouldQueue
+class OrdersCreateJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
@@ -49,19 +49,15 @@ class OrdersUpdateJob implements ShouldQueue
      */
     public function handle()
     {
-        // Convert domain
-        $this->shopDomain = ShopDomain::fromNative($this->shopDomain);
-
-        // Do what you wish with the data
-        $shopDomain = $this->shopDomain->toNative();
+        $shopDomain = $this->shopDomain;
         $user = User::whereName($shopDomain)->first();
         if (!$user) {
-            logger()->error('[OrdersUpdateJob] User not found for shop domain: ' . $shopDomain);
+            logger()->error('[OrdersCreateJob] User not found for shop domain: ' . $shopDomain);
             return;
         }
         $checkoutService = new CheckoutService();
         $checkoutArray = json_decode(json_encode($this->data), true);
-        logger()->info('[OrdersUpdateJob] Order Updated: ' . $checkoutArray['id']);
+        logger()->info('[OrdersCreateJob] Order Created: ', $checkoutArray);
         $checkoutService->saveCheckout($user, $checkoutArray, true);
     }
 }

@@ -386,16 +386,16 @@ return [
 
     'webhooks' => [
         [
-            'topic' => env('SHOPIFY_WEBHOOK_1_TOPIC', 'APP_UNINSTALLED'),
-            'address' => env('SHOPIFY_WEBHOOK_1_ADDRESS', config('app.url') . '/webhook/app-uninstalled')
+            'topic' => 'APP_UNINSTALLED',
+            'address' => config('app.url') . '/webhook/app-uninstalled'
         ],
         [
             'topic' => 'CHECKOUTS_UPDATE',
             'address' => config('app.url') . '/webhook/checkouts-update'
         ],
         [
-            'topic' => 'ORDERS_UPDATED',
-            'address' => config('app.url') . '/webhook/orders-update'
+            'topic' => 'ORDERS_CREATE',
+            'address' => config('app.url') . '/webhook/orders-create'
         ]
     ],
 

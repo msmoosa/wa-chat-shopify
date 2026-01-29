@@ -27,12 +27,15 @@ class CheckoutService
 
     function saveCheckout($user, $checkout, $isOrder = false)
     {
+        $shopifyCheckoutId = $isOrder ? $checkout['checkout_id'] : $checkout['id'];
+        $checkout = $this->removeUselessFields($checkout);
         return Checkout::upsert([
+            'id' => $shopifyCheckoutId,
             'user_id' => $user->id,
             'checkout_token' => $checkout['token'],
             'cart_token' => $checkout['cart_token'],
             'abandoned_checkout_url' => $checkout['abandoned_checkout_url'] ?? null,    
-            'shopify_checkout_id' => $checkout['id'],
+            'shopify_checkout_id' => $shopifyCheckoutId,
             'order_id' => $checkout['order_number'] ?? null,
             'total_price' => $checkout['total_price'],
             'currency' => $checkout['currency'],
@@ -46,6 +49,18 @@ class CheckoutService
             'data' => json_encode($checkout),
             'checkout_created_at' => Carbon::parse($checkout['created_at'])->toDateTimeString(),
             'checkout_updated_at' => Carbon::parse($checkout['updated_at'])->toDateTimeString(),
-        ], ['shopify_checkout_id']);
+        ], ['id']);
+    }
+
+    private function removeUselessFields($checkout)
+    {
+        unset($checkout['client_details']);
+        unset($checkout['current_shipping_price_set']);
+        unset($checkout['current_subtotal_price_set']);
+        unset($checkout['billing_address']);
+        //unset($checkout['line_items']);
+        //unset($checkout['shipping_address']);
+        unset($checkout['shipping_lines']);
+        return $checkout;
     }
 }
