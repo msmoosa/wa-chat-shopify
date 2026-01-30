@@ -63,4 +63,12 @@ class User extends Authenticatable implements IShopModel
     {
         return $this->hasMany(ManualTemplate::class);
     }
+
+    /**
+     * Get the automations for the shop.
+     */
+    public function automations()
+    {
+        return $this->hasMany(Automation::class);
+    }
 }

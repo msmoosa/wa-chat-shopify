@@ -2,6 +2,8 @@ import { createRouter, createWebHistory } from 'vue-router';
 import AbandonedCarts from '../components/AbandonedCarts.vue';
 import Home from '../components/Home.vue';
 import Templates from '../components/Templates.vue';
+import Automations from '../components/Automations.vue';
+import EditAutomation from '../components/EditAutomation.vue';
 
 // Store initial data from Laravel
 let initialData = {};
@@ -33,6 +35,31 @@ const routes = [
         component: Templates,
         props: (route) => ({
             shopDomain: initialData.shopDomain 
+        }),
+    },
+    {
+        path: '/automations',
+        name: 'automations',
+        component: Automations,
+        props: (route) => ({
+            shopDomain: initialData.shopDomain 
+        }),
+    },
+    {
+        path: '/automations/new',
+        name: 'automations-create',
+        component: EditAutomation,
+        props: (route) => ({
+            shopDomain: initialData.shopDomain 
+        }),
+    },
+    {
+        path: '/automations/:id/edit',
+        name: 'automations-edit',
+        component: EditAutomation,
+        props: (route) => ({
+            shopDomain: initialData.shopDomain,
+            id: route.params.id
         }),
     },
 ];

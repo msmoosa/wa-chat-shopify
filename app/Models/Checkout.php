@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Checkout extends Model
 {
@@ -60,5 +61,13 @@ class Checkout extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    /**
+     * Get the automation step runs for this checkout.
+     */
+    public function automationStepRuns(): HasMany
+    {
+        return $this->hasMany(AutomationStepRun::class);
     }
 }

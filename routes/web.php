@@ -6,6 +6,7 @@ use App\Http\Controllers\ShopConfigController;
 use App\Http\Controllers\TestPageController;
 use App\Http\Controllers\CheckoutsController;
 use App\Http\Controllers\ManualTemplateController;
+use App\Http\Controllers\AutomationsController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index'])
@@ -58,6 +59,23 @@ Route::post('/api/checkouts/{checkoutId}/send-message', [CheckoutsController::cl
 Route::get('/api/checkouts/analytics', [CheckoutsController::class, 'getAnalytics'])
     ->middleware(['verify.shopify'])
     ->name('api.checkouts.analytics');
+
+// API endpoints for automations
+Route::get('/api/automations', [AutomationsController::class, 'index'])
+    ->middleware(['verify.shopify'])
+    ->name('api.automations.index');
+
+Route::post('/api/automations', [AutomationsController::class, 'store'])
+    ->middleware(['verify.shopify'])
+    ->name('api.automations.store');
+
+Route::put('/api/automations/{id}', [AutomationsController::class, 'update'])
+    ->middleware(['verify.shopify'])
+    ->name('api.automations.update');
+
+Route::delete('/api/automations/{id}', [AutomationsController::class, 'destroy'])
+    ->middleware(['verify.shopify'])
+    ->name('api.automations.destroy');
 
 // External API endpoint to get store/user by domain
 Route::match(['GET', 'OPTIONS'], '/external/store', [ExternalStoreController::class, 'getStore'])

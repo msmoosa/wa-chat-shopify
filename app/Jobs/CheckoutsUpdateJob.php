@@ -9,7 +9,8 @@ use Osiset\ShopifyApp\Objects\Values\ShopDomain;
 use stdClass;
 use App\Models\User;
 use App\Services\CheckoutService;
-
+use App\Models\Checkout;
+use App\Helpers\AutomationEngine;
 class CheckoutsUpdateJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
@@ -63,6 +64,9 @@ class CheckoutsUpdateJob implements ShouldQueue
         $checkoutService = new CheckoutService();
         $checkoutArray = json_decode(json_encode($this->data), true);
         logger()->info('[CheckoutsUpdateJob] Checkout Array: ' . json_encode($checkoutArray, JSON_PRETTY_PRINT));
-        $checkoutService->saveCheckout($user, $checkoutArray);
+        $isNewCheckout = $checkoutService->saveCheckout($user, $checkoutArray);
+        if ($isNewCheckout) {
+            AutomationEngine::startForCheckout(Checkout::find($checkoutArray['id']));
+        }
     }
 }

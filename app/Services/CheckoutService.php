@@ -25,11 +25,21 @@ class CheckoutService
         });
     }
 
-    function saveCheckout($user, $checkout, $isOrder = false)
+    /**
+     * Save a checkout to the database.
+     * Returns true if the checkout is new, false if it is an update.
+     *
+     * @param User $user
+     * @param array $checkout
+     * @param bool $isOrder
+     * @return bool
+     */
+    function saveCheckout($user, $checkout, $isOrder = false): bool
     {
         $shopifyCheckoutId = $isOrder ? $checkout['checkout_id'] : $checkout['id'];
         $checkout = $this->removeUselessFields($checkout);
-        return Checkout::upsert([
+        $checkoutModel = Checkout::find($shopifyCheckoutId);
+        Checkout::upsert([
             'id' => $shopifyCheckoutId,
             'user_id' => $user->id,
             'checkout_token' => $checkout['token'],
@@ -50,6 +60,10 @@ class CheckoutService
             'checkout_created_at' => Carbon::parse($checkout['created_at'])->toDateTimeString(),
             'checkout_updated_at' => Carbon::parse($checkout['updated_at'])->toDateTimeString(),
         ], ['id']);
+        if (empty($checkoutModel)) { // new checkout
+            return true;
+        }
+        return false;
     }
 
     private function removeUselessFields($checkout)
