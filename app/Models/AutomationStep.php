@@ -19,6 +19,7 @@ class AutomationStep extends Model
         'type',
         'config',
         'step_order',
+        'wait_time',
     ];
 
     /**
@@ -32,6 +33,7 @@ class AutomationStep extends Model
             'type' => AutomationStepType::class,
             'config' => 'array',
             'step_order' => 'integer',
+            'wait_time' => 'integer',
             'created_at' => 'datetime',
             'updated_at' => 'datetime',
         ];

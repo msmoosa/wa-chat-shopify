@@ -8,6 +8,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
+use App\Models\AutomationStep;
 
 class AutomationsController extends Controller
 {
@@ -63,7 +64,8 @@ class AutomationsController extends Controller
             'is_active' => $validated['is_active'] ?? true,
         ]);
 
-        $automation->load('steps');
+        // save steps
+        $this->saveSteps($automation, $request->input('steps'));
 
         return response()->json([
             'success' => true,
@@ -104,7 +106,9 @@ class AutomationsController extends Controller
         ]);
 
         $automation->update($validated);
-        $automation->load('steps');
+        
+        // save steps
+        $this->saveSteps($automation, $request->input('steps'));
 
         return response()->json([
             'success' => true,
@@ -144,5 +148,85 @@ class AutomationsController extends Controller
             'success' => true,
             'message' => 'Automation deleted successfully.',
         ]);
+    }
+
+    public function show(int $id)
+    {
+        $shop = Auth::user();
+
+        if (! $shop) {
+            return null;
+        }
+
+        return response()->json([
+            'success' => true,
+            'data' => Automation::where('user_id', $shop->id)
+            ->where('id', $id)
+            ->with('steps')
+            ->first()
+        ]);
+    }
+
+    public function toggle(int $id)
+    {
+        $shop = Auth::user();
+        if (! $shop) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Unauthenticated.',
+            ], 401);
+        }
+
+        $automation = Automation::where('user_id', $shop->id)
+            ->where('id', $id)
+            ->first();
+
+        if (! $automation) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Automation not found.',
+            ], 404);
+        }
+
+        $automation->is_active = request()->input('is_active');
+        $automation->save();
+
+        return response()->json([
+            'success' => true
+        ]);
+    }
+
+    private function saveSteps(Automation $automation, $steps)
+    {
+        $order = 1;
+        $automationStepsIds = [];
+        foreach ($steps as $step) {
+            if (isset($step['id'])) {
+                $automationStepsIds[] = $step['id'];
+                AutomationStep::updateOrCreate(
+                    ['id' => $step['id']],
+                    [
+                        'automation_id' => $automation->id,
+                        'type' => $step['type'],
+                        'config' => $step['config'],
+                        'wait_time' => $step['wait_time'],
+                        'step_order' => $order++,
+                    ]
+                );
+            } else {
+                $automationStep = AutomationStep::create([
+                    'automation_id' => $automation->id,
+                    'type' => $step['type'],
+                    'config' => $step['config'],
+                    'wait_time' => $step['wait_time'],
+                    'step_order' => $order++,
+                ]);
+                $automationStepsIds[] = $automationStep->id;
+            }
+            // delete steps that are not in the request
+            AutomationStep::where('automation_id', $automation->id)
+                ->whereNotIn('id', $automationStepsIds)
+                ->delete();
+        }
     }
 }

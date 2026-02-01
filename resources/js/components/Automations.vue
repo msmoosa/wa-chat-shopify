@@ -120,7 +120,7 @@ export default {
         async toggleAutomation(automation) {
             this.updatingId = automation.id;
             try {
-                const response = await fetch(`/api/automations/${automation.id}`, {
+                const response = await fetch(`/api/automations/${automation.id}/toggle`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',

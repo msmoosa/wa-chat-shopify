@@ -65,6 +65,14 @@ Route::get('/api/automations', [AutomationsController::class, 'index'])
     ->middleware(['verify.shopify'])
     ->name('api.automations.index');
 
+Route::get('/api/automations/{id}', [AutomationsController::class, 'show'])
+    ->middleware(['verify.shopify'])
+    ->name('api.automations.show');
+
+Route::put('/api/automations/{id}/toggle', [AutomationsController::class, 'toggle'])
+    ->middleware(['verify.shopify'])
+    ->name('api.automations.toggle');
+
 Route::post('/api/automations', [AutomationsController::class, 'store'])
     ->middleware(['verify.shopify'])
     ->name('api.automations.store');
