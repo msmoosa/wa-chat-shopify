@@ -51,7 +51,7 @@ class CheckoutService
             'currency' => $checkout['currency'],
             //'total_price_usd' => $checkout['total_price_usd'], //TODO: add total price in usd
             'status' => $isOrder ? CheckoutStatus::COMPLETED : CheckoutStatus::OPEN,
-            'customer_name' => $checkout['shipping_address']['first_name'] . ' ' . $checkout['shipping_address']['last_name'],
+            'customer_name' => $checkout['customer']['first_name'] ?? $checkout['default_address']['first_name'] ?? '',
             'phone_number' => $checkout['phone'],
             'email' => $checkout['email'],
             'buyer_accepts_marketing' => $checkout['buyer_accepts_marketing'],
@@ -76,5 +76,9 @@ class CheckoutService
         //unset($checkout['shipping_address']);
         unset($checkout['shipping_lines']);
         return $checkout;
+    }
+
+    public function isIncompleteCheckout($checkout) {
+        return empty($checkout['email']) && empty($checkout['phone']);
     }
 }

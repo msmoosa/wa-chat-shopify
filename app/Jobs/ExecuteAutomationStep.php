@@ -5,6 +5,7 @@ namespace App\Jobs;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 use App\Models\AutomationStepRun;
+use App\Models\Enums\AutomationStepRunStatus;
 
 
 class ExecuteAutomationStep implements ShouldQueue
@@ -28,14 +29,19 @@ class ExecuteAutomationStep implements ShouldQueue
         //
         $stepRun = $this->stepRun->fresh();
 
-        if ($stepRun->status !== 'pending') return;
+        if ($stepRun->status != AutomationStepRunStatus::PENDING) {
+            logger()->info('Automation step already executed: ' . $stepRun->id . ' - ' . $stepRun->status->value);
+            return;
+        }
 
         // order already placed?
-        if ($stepRun->checkout->order_created_at) {
+        if ($stepRun->checkout->isOrder() && $stepRun->automation->trigger === 'abandoned_checkout') {
+            logger()->info('Order already placed, skipping automation step: ' . $stepRun->id);
             $stepRun->update(['status' => 'skipped']);
             return;
         }
 
+        logger()->info('Executing automation step: ' . $stepRun->automationStep->config['message']);
         // MessageSender::send(
         //     $stepRun->channel,
         //     $stepRun->checkout->phone,

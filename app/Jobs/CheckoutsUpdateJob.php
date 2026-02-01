@@ -53,7 +53,7 @@ class CheckoutsUpdateJob implements ShouldQueue
         // Convert domain
         $this->shopDomain = ShopDomain::fromNative($this->shopDomain);
 
-        logger()->info('[CheckoutsUpdateJob] Data: ' . json_encode($this->data));
+        //logger()->info('[CheckoutsUpdateJob] Data: ' . json_encode($this->data));
         $shopDomain = $this->shopDomain->toNative();
         $user = User::whereName($shopDomain)->first();
         if (!$user) {
@@ -63,7 +63,13 @@ class CheckoutsUpdateJob implements ShouldQueue
 
         $checkoutService = new CheckoutService();
         $checkoutArray = json_decode(json_encode($this->data), true);
-        logger()->info('[CheckoutsUpdateJob] Checkout Array: ' . json_encode($checkoutArray, JSON_PRETTY_PRINT));
+        // logger()->info('[CheckoutsUpdateJob] Checkout Array: ' . json_encode($checkoutArray, JSON_PRETTY_PRINT));
+        if ($checkoutService->isIncompleteCheckout($checkoutArray))
+        {
+            logger()->info('[CheckoutsUpdateJob] Incomplete checkout, skipping: ' . $checkoutArray['id']);
+            return;
+        }
+        logger()->info('[CheckoutsUpdateJob] Saving checkout: ' . $checkoutArray['id']);
         $isNewCheckout = $checkoutService->saveCheckout($user, $checkoutArray);
         if ($isNewCheckout) {
             AutomationEngine::startForCheckout(Checkout::find($checkoutArray['id']));

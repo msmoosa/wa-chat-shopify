@@ -34,9 +34,10 @@
                     <div class="step-item-actions" gap="small">
                         <s-button icon="edit" commandFor="sms-step-modal" command="--show"
                             @click="editingStep = step"></s-button>
+                        <s-button icon="arrow-up" @click="moveStepUp(step)"></s-button>
                         <s-button icon="delete" @click="removeStep(step)"></s-button>
                     </div>
-                    <div class="step-wait_time">Wait {{ getWaitTime(step) }}</div>
+                    <div class="step-wait_time">Wait <s-chip variant="primary">{{ getWaitTime(step) }}</s-chip></div>
                     <div class="step-item-content">
                         <div>
                             <s-heading size="small">{{ step.type ===
@@ -298,6 +299,13 @@ export default {
                     return '7 days';
                 default:
                     return 'Unknown';
+            }
+        },
+        moveStepUp(step) {
+            const index = this.automation.steps.indexOf(step);
+            if (index > 0) {
+                this.automation.steps.splice(index, 1);
+                this.automation.steps.splice(index - 1, 0, step);
             }
         }
     },

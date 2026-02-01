@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use App\Models\Enums\CheckoutStatus;
 
 class Checkout extends Model
 {
@@ -53,6 +54,10 @@ class Checkout extends Model
             'created_at' => 'datetime',
             'updated_at' => 'datetime',
         ];
+    }
+
+    public function isOrder() {
+        return $this->status != CheckoutStatus::OPEN;
     }
 
     /**

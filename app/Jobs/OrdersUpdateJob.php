@@ -61,7 +61,7 @@ class OrdersUpdateJob implements ShouldQueue
         }
         $checkoutService = new CheckoutService();
         $checkoutArray = json_decode(json_encode($this->data), true);
-        logger()->info('[OrdersUpdateJob] Order Updated: ' . $checkoutArray['id']);
+        //logger()->info('[OrdersUpdateJob] Order Updated: ' . $checkoutArray['id']);
         $checkoutService->saveCheckout($user, $checkoutArray, true);
     }
 }

@@ -223,10 +223,10 @@ class AutomationsController extends Controller
                 ]);
                 $automationStepsIds[] = $automationStep->id;
             }
-            // delete steps that are not in the request
-            AutomationStep::where('automation_id', $automation->id)
-                ->whereNotIn('id', $automationStepsIds)
-                ->delete();
         }
+        // delete steps that are not in the request
+        AutomationStep::where('automation_id', $automation->id)
+        ->whereNotIn('id', $automationStepsIds)
+        ->delete();
     }
 }

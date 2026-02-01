@@ -57,7 +57,7 @@ class OrdersCreateJob implements ShouldQueue
         }
         $checkoutService = new CheckoutService();
         $checkoutArray = json_decode(json_encode($this->data), true);
-        logger()->info('[OrdersCreateJob] Order Created: ', $checkoutArray);
+        //logger()->info('[OrdersCreateJob] Order Created: ', $checkoutArray);
         $checkoutService->saveCheckout($user, $checkoutArray, true);
     }
 }

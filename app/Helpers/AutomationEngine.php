@@ -8,11 +8,13 @@ use App\Models\AutomationStepRun;
 use App\Jobs\ExecuteAutomationStep;
 use App\Models\Checkout;
 use App\Jobs\ExecuteAutomationStepJob;
+use App\Services\AppHelper;
 
 class AutomationEngine
 {
     public static function startForCheckout(Checkout $checkout)
     {
+        logger()->info('Starting automation for checkout: ' . $checkout->id);
         $automations = Automation::where('trigger', 'abandoned_checkout')
             ->where('is_active', true)
             ->with('steps')
@@ -26,13 +28,14 @@ class AutomationEngine
     protected static function scheduleSteps($automation, $checkout)
     {
         $runAt = now();
+        // TODO: Add abandoned checkout delay
+        if ($automation->trigger === 'abandoned_checkout') {
+            $runAt = $runAt->addMinutes(AppHelper::isLocal() ? 1 : 5);
+        }
 
         foreach ($automation->steps->sortBy('step_order') as $step) {
 
-            if ($step->type === 'delay') {
-                $runAt = $runAt->addMinutes($step->config['minutes']);
-                continue;
-            }
+            $runAt = $runAt->addMinutes($step->wait_time);
 
             $stepRun = AutomationStepRun::create([
                 'automation_id'      => $automation->id,
@@ -43,6 +46,7 @@ class AutomationEngine
                 'scheduled_at'       => $runAt,
             ]);
 
+            logger()->info('Scheduling automation step: ' . $stepRun->id . ' - ' . $stepRun->status->value);
             ExecuteAutomationStep::dispatch($stepRun)
                 ->delay($runAt);
         }
