@@ -28,6 +28,7 @@ class TestSmsService extends Command
     {
         //
         $smsService = new SmsService();
-        $smsService->send('+918971028208', 'Hello Piyush, This is a test SMS from Moosa #ClickSendWorks');
+        $smsService->send('+918971028208', 
+        'Hello Piyush, This is a test SMS from Moosa #TwilioChalGaya');
     }
 }

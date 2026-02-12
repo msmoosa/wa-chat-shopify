@@ -37,7 +37,8 @@
                             </s-badge>
                         </s-table-cell>
                         <s-table-cell>
-                            <s-text>{{ automation.steps?.length || 0 }} step(s)</s-text>
+                            <s-text>{{ automation.steps?.length || 0 }} step{{ automation.steps?.length > 1 ? 's' : ''
+                                }}</s-text>
                         </s-table-cell>
                         <s-table-cell>
                             <s-switch :checked="automation.is_active" @input="toggleAutomation(automation)"
