@@ -30,8 +30,10 @@ return [
 
     'slack' => [
         'notifications' => [
-            'bot_user_oauth_token' => env('SLACK_BOT_USER_OAUTH_TOKEN'),
-            'channel' => env('SLACK_BOT_USER_DEFAULT_CHANNEL'),
+            'config_saved' => env('SLACK_WEBHOOK_CONFIG_SAVED'),
+            'login' => env('SLACK_WEBHOOK_LOGIN'),
+            'uninstall' => env('SLACK_WEBHOOK_UNINSTALL'),
+            'default' => env('SLACK_WEBHOOK_DEFAULT'),
         ],
     ],
 

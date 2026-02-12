@@ -15,8 +15,6 @@ class SlackNotificationJob implements ShouldQueue
     public $user;
     public $data;
 
-    public $webhookUrls = [];
-
     /**
      * Create a new job instance.
      */
@@ -25,12 +23,6 @@ class SlackNotificationJob implements ShouldQueue
         $this->event = $event;
         $this->user = $user;
         $this->data = $data;
-        $this->webhookUrls = [
-            'login' => env('SLACK_WEBHOOK_LOGIN'),
-            'uninstall' => env('SLACK_WEBHOOK_UNINSTALL'),
-            'config_saved' => env('SLACK_WEBHOOK_CONFIG_SAVED'),
-            'default' => env('SLACK_WEBHOOK_DEFAULT'),
-        ];
     }
 
     /**
@@ -38,8 +30,13 @@ class SlackNotificationJob implements ShouldQueue
      */
     public function handle(): void
     {
-        $webhookUrl = $this->webhookUrls[$this->event] ?? $this->webhookUrls['default'];
+        $webhookUrl = config('app.services.slack.notifications.' . $this->event) ?? config('app.services.slack.notifications.default');
+        if (!$webhookUrl) {
+            Log::error('SLACK_WEBHOOK_URL is not configured for ' . $this->event);
+            return;
+        }
 
+        // get user name and email
         $userName = $this->user->name ?? $this->user->email ?? 'Unknown User';
         $userEmail = $this->user->email ?? 'N/A';
 
@@ -93,10 +90,7 @@ class SlackNotificationJob implements ShouldQueue
         }
 
         try {
-            if (! $webhookUrl) {
-                Log::error('SLACK_WEBHOOK_URL is not configured for ' . $this->event . ' and ' . env('SLACK_WEBHOOK_CONFIG_SAVED'));
-                return;
-            }
+            
             $response = Http::post($webhookUrl, $payload);
 
             if (! $response->successful()) {
