@@ -94,7 +94,7 @@ class SlackNotificationJob implements ShouldQueue
 
         try {
             if (! $webhookUrl) {
-                Log::error('SLACK_WEBHOOK_URL is not configured');
+                Log::error('SLACK_WEBHOOK_URL is not configured for ' . $this->event . ' and ' . env('SLACK_WEBHOOK_CONFIG_SAVED'));
                 return;
             }
             $response = Http::post($webhookUrl, $payload);
