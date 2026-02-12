@@ -15,12 +15,7 @@ class SlackNotificationJob implements ShouldQueue
     public $user;
     public $data;
 
-    public $webhookUrls = [
-        'login' => env('SLACK_WEBHOOK_LOGIN'),
-        'uninstall' => env('SLACK_WEBHOOK_UNINSTALL'),
-        'config_saved' => env('SLACK_WEBHOOK_CONFIG_SAVED'),
-        'default' => env('SLACK_WEBHOOK_DEFAULT'),
-    ];
+    public $webhookUrls = [];
 
     /**
      * Create a new job instance.
@@ -30,6 +25,12 @@ class SlackNotificationJob implements ShouldQueue
         $this->event = $event;
         $this->user = $user;
         $this->data = $data;
+        $this->webhookUrls = [
+            'login' => env('SLACK_WEBHOOK_LOGIN'),
+            'uninstall' => env('SLACK_WEBHOOK_UNINSTALL'),
+            'config_saved' => env('SLACK_WEBHOOK_CONFIG_SAVED'),
+            'default' => env('SLACK_WEBHOOK_DEFAULT'),
+        ];
     }
 
     /**
