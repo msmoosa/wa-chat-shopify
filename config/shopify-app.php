@@ -408,14 +408,16 @@ return [
     |
     */
 
+    // Script tags are deprecated - using theme app extensions instead
+    // See: cli/whatsapp-chat-button/extensions/theme-extension for the theme app extension
     'scripttags' => [
         
-            [
-                'src' => env('SHOPIFY_SCRIPTTAG_1_SRC', config('app.url') . '/js/wa-chat.js'),
-                'event' => env('SHOPIFY_SCRIPTTAG_1_EVENT', 'onload'),
-                'display_scope' => env('SHOPIFY_SCRIPTTAG_1_DISPLAY_SCOPE', 'online_store')
-            ]
-        ],
+            // [
+            //     'src' => env('SHOPIFY_SCRIPTTAG_1_SRC', config('app.url') . '/js/wa-chat.js'),
+            //     'event' => env('SHOPIFY_SCRIPTTAG_1_EVENT', 'onload'),
+            //     'display_scope' => env('SHOPIFY_SCRIPTTAG_1_DISPLAY_SCOPE', 'online_store')
+            // ]
+    ],
 
     /*
     |--------------------------------------------------------------------------
