@@ -74,7 +74,7 @@ class AfterAuthenticateJob implements ShouldQueue
         // }
 
         $this->addDefaultMessageTemplates($user);
-        SlackNotificationJob::dispatch('config_saved', $user);
+        SlackNotificationJob::dispatch('login', $user);
     }
 
     private function addDefaultMessageTemplates(User $user)

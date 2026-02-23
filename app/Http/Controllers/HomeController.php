@@ -13,7 +13,7 @@ class HomeController extends Controller
     function index() {
         $shop = Auth::user();
         $shopDomain = $shop->name ?? '';
-        // AfterAuthenticateJob::dispatch($shop);
+        AfterAuthenticateJob::dispatch($shop);
         return view('welcome', compact('shop', 'shopDomain'));
     }
 }
