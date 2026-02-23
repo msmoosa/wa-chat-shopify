@@ -13,19 +13,14 @@ class AppUninstalledJob extends \Osiset\ShopifyApp\Messaging\Jobs\AppUninstalled
     {
         $shop = $shopQuery->getByDomain($this->domain);
         logger()->info('AppUninstalled Job triggered');
-        // Reset onboarding flag before handling uninstall
-        // This ensures if the shop reinstalls, they'll see the onboarding again
-        if ($shop) {
-            // Find the user by domain name (same pattern as AfterAuthenticateJob)
-            $user = User::where('name', $shop->getDomain()->toNative())->first();
-            if ($user) {
-                $user->onboarding_completed = false;
-                $user->save();
-                logger()->info('Onboarding flag reset for uninstalled shop', [
-                    'shop_domain' => $shop->getDomain()->toNative(),
-                    'user_id' => $user->id
-                ]);
-            }
+        $user = User::where('name', $this->domain)->first();
+        if ($user) {
+            $user->onboarding_completed = false;
+            $user->save();
+            logger()->info('Onboarding flag reset for uninstalled shop', [
+                'shop_domain' => $this->domain,
+                'user_id' => $user->id
+            ]);
         }
 
         $parentResult = parent::handle($shopCommand, $shopQuery, $cancelCurrentPlanAction);
