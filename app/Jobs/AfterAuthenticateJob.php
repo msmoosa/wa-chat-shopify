@@ -45,8 +45,8 @@ class AfterAuthenticateJob implements ShouldQueue
         // Add your logic here after shop authentication
         // For example, you can install script tags, create webhooks, etc.
         // install script tags from config/shopify-app.php
-        $scriptTags = config('shopify-app.scripttags');
-        logger()->debug('ScriptTags To Install: ', ['scriptTags' => $scriptTags]);
+        // $scriptTags = config('shopify-app.scripttags');
+        // logger()->debug('ScriptTags To Install: ', ['scriptTags' => $scriptTags]);
 
         // check if script tags are already installed
         // $installedScriptTags = $this->shop->apiHelper()->getScriptTags();
@@ -59,19 +59,19 @@ class AfterAuthenticateJob implements ShouldQueue
         //     }
         // }
 
-        // install webhooks from config/shopify-app.php
-        // $webhooks = config('shopify-app.webhooks');
-        // logger()->debug('Webhooks To Install: ', ['count' => count($webhooks), 'webhooks' => $webhooks]);
-        // $installedWebhooks = $this->shop->apiHelper()->getWebhooks();
-        // logger()->debug('Installed Webhooks', ['count' => count($installedWebhooks), 'installedWebhooks' => $installedWebhooks]);
-        // $installedWebhooks = $installedWebhooks->toArray();
-        // $installedWebhooksJson = json_encode($installedWebhooks);
-        // foreach ($webhooks as $webhook) {
-        //     if (!str_contains($installedWebhooksJson, $webhook['topic'])) {
-        //         $response = $this->shop->apiHelper()->createWebhook($webhook);
-        //         logger()->debug('Webhook created for topic: ' . $webhook['topic'], ['response' => $response]);
-        //     }
-        // }
+        //install webhooks from config/shopify-app.php
+        $webhooks = config('shopify-app.webhooks');
+        logger()->debug('Webhooks To Install: ', ['count' => count($webhooks), 'webhooks' => $webhooks]);
+        $installedWebhooks = $this->shop->apiHelper()->getWebhooks();
+        logger()->debug('Installed Webhooks', ['count' => count($installedWebhooks), 'installedWebhooks' => $installedWebhooks]);
+        $installedWebhooks = $installedWebhooks->toArray();
+        $installedWebhooksJson = json_encode($installedWebhooks);
+        foreach ($webhooks as $webhook) {
+            if (!str_contains($installedWebhooksJson, $webhook['topic'])) {
+                $response = $this->shop->apiHelper()->createWebhook($webhook);
+                logger()->debug('Webhook created for topic: ' . $webhook['topic'], ['response' => $response]);
+            }
+        }
 
         $this->addDefaultMessageTemplates($user);
         SlackNotificationJob::dispatch('login', $user);

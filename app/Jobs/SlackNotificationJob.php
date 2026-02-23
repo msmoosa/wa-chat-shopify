@@ -30,7 +30,7 @@ class SlackNotificationJob implements ShouldQueue
      */
     public function handle(): void
     {
-        $webhookUrl = config('app.services.slack.notifications.' . $this->event) ?? config('app.services.slack.notifications.default');
+        $webhookUrl = config('services.slack.notifications.' . $this->event) ?? config('services.slack.notifications.default');
         if (!$webhookUrl) {
             Log::error('SLACK_WEBHOOK_URL is not configured for ' . $this->event);
             return;
