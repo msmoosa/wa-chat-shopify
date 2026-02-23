@@ -27,6 +27,11 @@ Route::post('/api/shop-config', [ShopConfigController::class, 'saveConfig'])
     ->middleware(['verify.shopify'])
     ->name('api.shop-config.save');
 
+// API endpoint to mark onboarding as completed
+Route::post('/api/onboarding/complete', [ShopConfigController::class, 'completeOnboarding'])
+    ->middleware(['verify.shopify'])
+    ->name('api.onboarding.complete');
+
 // API endpoint to get abandoned checkouts for the authenticated shop
 Route::get('/api/abandonedCheckouts', [CheckoutsController::class, 'getAbandonedCheckouts'])
     ->middleware(['verify.shopify'])

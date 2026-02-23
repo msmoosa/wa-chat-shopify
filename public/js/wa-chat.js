@@ -52,9 +52,8 @@ var shopDomain;
         if (!!shopDomain) {
             return shopDomain;
         }
-        let scriptUrl = getScriptUrl();
-        log('Script url: ', scriptUrl);
-        return shopUrl = Utilities.parseQueryString(scriptUrl).shop;
+        shopDomain = Shopify.shop;
+        return shopDomain;
     }
 
     const Utilities = {

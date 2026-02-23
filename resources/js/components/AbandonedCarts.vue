@@ -1,5 +1,5 @@
 <template>
-    <s-page title="Products">
+    <s-page title="Abandoned Carts">
         <s-section>
             <div style="display: flex; justify-content: space-between; align-items: center;">
                 <s-heading>Abandoned Carts</s-heading>
@@ -55,7 +55,7 @@
             <s-box v-if="state == 'loading'" padding="large">
                 <s-spinner accessibilityLabel="Loading" size="large-100"></s-spinner>
             </s-box>
-            <s-table v-else style="margin-top: 20px" :data="abandonedCarts" :columns="columns">
+            <s-table v-else style="margin-top: 20px" :data="checkouts" :columns="columns">
                 <s-table-header-row>
                     <s-table-header>Name</s-table-header>
                     <s-table-header>Amount</s-table-header>
@@ -85,7 +85,7 @@
                                 <s-option>Send Message</s-option>
                                 <s-option v-for="template in templates" :value="template.id" :key="template.id">{{
                                     template.title
-                                    }}</s-option>
+                                }}</s-option>
                             </s-select>
                             <s-text v-else>No phone number</s-text>
                         </s-table-cell>

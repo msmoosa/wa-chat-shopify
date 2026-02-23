@@ -25,6 +25,7 @@ class User extends Authenticatable implements IShopModel
         'email',
         'password',
         'whatsapp_config',
+        'onboarding_completed',
     ];
 
     /**
@@ -47,6 +48,7 @@ class User extends Authenticatable implements IShopModel
         return [
             'email_verified_at' => 'datetime',
             'whatsapp_config' => 'array',
+            'onboarding_completed' => 'boolean',
             //'password' => 'hashed',
         ];
     }

@@ -32,7 +32,13 @@ class ShopConfigController extends Controller
         $shop->whatsapp_config = $whatsappConfig;
         return response()->json([
             'success' => true,
-            'data' => $shop
+            'data' => [
+                'id' => $shop->id,
+                'name' => $shop->name,
+                'email' => $shop->email,
+                'whatsapp_config' => $shop->whatsapp_config,
+                'onboarding_completed' => $shop->onboarding_completed ?? false,
+            ]
         ]);
     }
 
@@ -73,6 +79,42 @@ class ShopConfigController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to save configuration: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Mark onboarding as completed.
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function completeOnboarding(Request $request): JsonResponse
+    {
+        $shop = Auth::user();
+
+        if (!$shop) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Unauthorized'
+            ], 401);
+        }
+
+        try {
+            $shop->onboarding_completed = true;
+            $shop->save();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Onboarding marked as completed',
+                'data' => [
+                    'onboarding_completed' => $shop->onboarding_completed
+                ]
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to update onboarding status: ' . $e->getMessage()
             ], 500);
         }
     }
