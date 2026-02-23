@@ -11,7 +11,6 @@ class AppUninstalledJob extends \Osiset\ShopifyApp\Messaging\Jobs\AppUninstalled
 {
     public function handle(Shop $shopCommand, QueriesShop $shopQuery, CancelCurrentPlan $cancelCurrentPlanAction): bool
     {
-        $shop = $shopQuery->getByDomain($this->domain);
         logger()->info('AppUninstalled Job triggered');
         $user = User::where('name', $this->domain)->first();
         if ($user) {
