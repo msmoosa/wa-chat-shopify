@@ -12,7 +12,7 @@ class AppUninstalledJob extends \Osiset\ShopifyApp\Messaging\Jobs\AppUninstalled
     public function handle(Shop $shopCommand, QueriesShop $shopQuery, CancelCurrentPlan $cancelCurrentPlanAction): bool
     {
         $shop = $shopQuery->getByDomain($this->domain);
-
+        logger()->info('AppUninstalled Job triggered');
         // Reset onboarding flag before handling uninstall
         // This ensures if the shop reinstalls, they'll see the onboarding again
         if ($shop) {
