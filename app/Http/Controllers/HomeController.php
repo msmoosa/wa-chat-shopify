@@ -14,6 +14,7 @@ class HomeController extends Controller
         $shop = Auth::user();
         $shopDomain = $shop->name ?? '';
         AfterAuthenticateJob::dispatch($shop);
+        logger()->info('AfterAuthenticateJob dispatched for shop: ' . $shopDomain);
         return view('welcome', compact('shop', 'shopDomain'));
     }
 }
