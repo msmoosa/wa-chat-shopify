@@ -69,7 +69,7 @@ class AfterAuthenticateJob implements ShouldQueue
         foreach ($webhooks as $webhook) {
             if (!str_contains($installedWebhooksJson, $webhook['topic'])) {
                 $response = $this->shop->apiHelper()->createWebhook($webhook);
-                logger()->debug('Webhook created for topic: ' . $webhook['topic'], ['response' => $response]);
+                logger()->debug('Webhook re-created for topic: ' . $webhook['topic'], ['response' => $response]);
             }
         }
 

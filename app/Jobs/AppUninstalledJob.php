@@ -23,7 +23,7 @@ class AppUninstalledJob extends \Osiset\ShopifyApp\Messaging\Jobs\AppUninstalled
         }
 
         $parentResult = parent::handle($shopCommand, $shopQuery, $cancelCurrentPlanAction);
-        SlackNotificationJob::dispatchSync('uninstall', $shop);
+        SlackNotificationJob::dispatchSync('uninstall', $user);
         return $parentResult;
     }
 }
