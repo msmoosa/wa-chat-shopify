@@ -52,6 +52,6 @@ class ComplianceEventJob implements ShouldQueue
 
         // Do what you wish with the data
         // Access domain name as $this->shopDomain->toNative()
-        log('ComplianceEventJob: ' . $this->shopDomain->toNative() . ' - ' . json_encode($this->data));
+        log('ComplianceEventJob: ' . $this->shopDomain . ' - ' . json_encode($this->data));
     }
 }
