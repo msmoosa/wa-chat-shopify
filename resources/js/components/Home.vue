@@ -19,8 +19,24 @@
                     </s-grid>
                     <s-box borderRadius="base" border="base" background="base">
                         <s-box>
+                            <s-box padding="small">
+                                <s-checkbox :checked="onboardingStep > 1" label="Configure your Whatsapp phone
+                                    number" />
+                                <div v-show="onboardingStep === 1">
+                                    <s-text-field :value="config.phoneNumber"
+                                        @input="config.phoneNumber = $event.target.value" label="Whatsapp Phone Number"
+                                        name="phone" placeholder="Enter phone number" />
+                                    <s-text tone="critical" v-if="isInvalidWhatsappNumber(config.phoneNumber)">
+                                        Enter a valid whatsapp number with + or 00 prefix</s-text>
+                                    <div style="margin-top:10px">
+                                        <s-button @click="onboardingSave" variant="primary"
+                                            :loading="saving">Save</s-button>
+                                    </div>
+                                </div>
+                            </s-box>
+                            <s-divider />
                             <s-grid gridTemplateColumns="1fr auto" gap="base" padding="small">
-                                <s-checkbox label="Whatsapp Chat App Block" />
+                                <s-checkbox :checked="onboardingStep > 2" label="Whatsapp Chat App Block" />
                             </s-grid>
                             <s-box padding="small" paddingBlockStart="none">
                                 <s-button @click="navigateToWhatsappChatAppBlock" variant="secondary">Enable Whatsapp
@@ -257,7 +273,8 @@ export default {
             config: null,
             loading: true,
             saving: false,
-            showOnboardingGuide: true
+            showOnboardingGuide: true,
+            onboardingStep: 1
         }
     },
     mounted() {
@@ -349,6 +366,10 @@ export default {
                 gender: 'male'
             });
         },
+        onboardingSave() {
+            this.saveConfig();
+            this.onboardingStep++;
+        },
         removeAgent(phoneNumber) {
             this.config.widgetAgents = this.config.widgetAgents.filter(agent => agent.phoneNumber !== phoneNumber);
         },
@@ -368,6 +389,7 @@ export default {
             // open in new tab
             const url = 'https://' + this.shopDomain + '/admin/themes/current/editor?context=apps&activateAppId=bf9a0e5b15b3cfb0d8394d90075c6c8d/app-embed';
             window.open(url, '_blank');
+            this.onboardingStep++;
         },
         async configureWhatsappButtonSettings() {
             // Mark onboarding as completed
