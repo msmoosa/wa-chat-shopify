@@ -85,7 +85,7 @@
                                 <s-option>Send Message</s-option>
                                 <s-option v-for="template in templates" :value="template.id" :key="template.id">{{
                                     template.title
-                                    }}</s-option>
+                                }}</s-option>
                             </s-select>
                             <s-text v-else>No phone number</s-text>
                         </s-table-cell>
