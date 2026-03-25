@@ -85,7 +85,7 @@
                                 <s-option>Send Message</s-option>
                                 <s-option v-for="template in templates" :value="template.id" :key="template.id">{{
                                     template.title
-                                }}</s-option>
+                                    }}</s-option>
                             </s-select>
                             <s-text v-else>No phone number</s-text>
                         </s-table-cell>
@@ -200,7 +200,7 @@ export default {
         },
         getTemplateContent(template, checkout) {
             let message = template.message.replace('{customer_name}', checkout.customer_name)
-                .replace('{checkout_url}', checkout.cart_permalink)
+                .replace('{checkout_url}', checkout.abandoned_checkout_url)
                 .replace('{total_price}', checkout.total_price);
             return window.encodeURIComponent(message);
         },
