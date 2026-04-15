@@ -29,7 +29,7 @@ class CheckoutsController extends Controller
         $checkouts = Checkout::where('user_id', $shop->id)
             ->where('status', CheckoutStatus::OPEN)
             ->where('checkout_created_at', '<', 
-            Carbon::now()->subMinutes(AppHelper::isLocal() ? 0 : 5))
+            Carbon::now()->subMinutes(AppHelper::isLocal() ? 0 : 1))
             ->orderByDesc('checkout_updated_at')
             ->get();
 
